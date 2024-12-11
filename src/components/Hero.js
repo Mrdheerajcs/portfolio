@@ -38,7 +38,7 @@ const Hero = () => {
 
     const interval = setInterval(() => {
       setBinaryRows(generateBinaryRows());
-    }, 1500); // Faster update interval for dynamic effect
+    }, 50); // Faster update interval for dynamic effect
 
     return () => clearInterval(interval);
   }, []);
@@ -48,7 +48,7 @@ const Hero = () => {
   };
 
   const handleViewWork = () => {
-    navigate("/roadmap");
+    navigate("/workroot");
   };
 
   return (

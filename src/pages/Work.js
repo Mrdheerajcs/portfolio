@@ -86,3 +86,25 @@ const Work = () => {
 };
 
 export default Work;
+
+
+
+
+// const  companiesList = [
+//   {
+//     name: "Infosys",
+//     description: `Infosys is a global leader in next-generation digital services and consulting. Founded in 1981, the company empowers businesses worldwide with innovative technology solutions, including AI, cloud computing, and digital transformation. Headquartered in Bangalore, India, Infosys serves clients across over 50 countries.`,
+//   },
+//   {
+//     name: "TCS (Tata Consultancy Services)",
+//     description: `TCS is one of the world's largest IT services, consulting, and business solutions organizations. With a strong focus on technology innovation, TCS offers services in software development, IT infrastructure, and digital transformation. It operates in over 45 countries, helping businesses achieve operational excellence.`,
+//   },
+//   {
+//     name: "Accenture",
+//     description: `Accenture is a global professional services company specializing in IT consulting, strategy, and operations. Renowned for its expertise in digital transformation and cutting-edge technology, Accenture helps organizations unlock growth opportunities across industries. The company operates in more than 120 countries.`,
+//   },
+//   {
+//     name: "Microsoft",
+//     description: `Microsoft is a leading multinational technology company offering software, hardware, and cloud-based solutions. Known for its flagship products like Windows OS, Office Suite, and Azure cloud services, Microsoft empowers individuals and businesses with innovative tools for productivity and growth.`,
+//   },
+// ];
