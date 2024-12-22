@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { FaCarSide } from "react-icons/fa";
 import { GoOrganization } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
 function MyWorkRoot() {
+  const navigate = useNavigate();
   const [isMoving, setIsMoving] = useState(false);
   const [carPosition, setCarPosition] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -10,8 +12,6 @@ function MyWorkRoot() {
   const [visitedCompanies, setVisitedCompanies] = useState([]);
   const [journeyComplete, setJourneyComplete] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
-
-  const roadLength = 70; // Length of the road
 
   const companiesList = [
     {
@@ -44,22 +44,19 @@ function MyWorkRoot() {
     },
   ];
 
+  const roadLength = companiesList.length * 18; 
+
+  useEffect(() => {
+    if(journeyComplete === true){
+      navigate("/work")
+    }
+  });
+
+  
+
   const startCar = useCallback(() => {
     setIsMoving(true);
   }, []);
-
-  // const handleVisitDecision = useCallback(
-  //   (decision) => {
-  //     if (decision === "Visit" && currentCompany) {
-  //       setVisitedCompanies((prev) => [...prev, currentCompany]);
-  //       setMessageModal(true);
-  //     }
-  //     setIsModalOpen(false);
-  //     setMessageModal(false);
-  //     setIsMoving(true);
-  //   },
-  //   [currentCompany]
-  // );
 
   const handleOkClick = useCallback(() => {
     setMessageModal(false);
@@ -87,7 +84,7 @@ function MyWorkRoot() {
             return prev;
           }
         });
-      }, 100);
+      }, 120);
     }
 
     return () => {
@@ -97,21 +94,20 @@ function MyWorkRoot() {
     };
   }, [isMoving]);
 
-  const handleVisitDecision = useCallback((decision) => {
-    if (decision === "Visit" && currentCompany) {
-      setVisitedCompanies((prev) => [...prev, currentCompany]);
-      setMessageModal(true);
-      
-      // Automatically resume car movement after a short delay
-      setTimeout(() => {
-        setMessageModal(false);
+  const handleVisitDecision = useCallback(
+    (decision) => {
+      if (decision === "Visit" && currentCompany) {
+        setVisitedCompanies((prev) => [...prev, currentCompany]);
+        setMessageModal(true);
+        setIsModalOpen(false);
+        setIsMoving(false);
+      } else {
+        setIsModalOpen(false);
         setIsMoving(true);
-      }, 2000); // 2 seconds delay to allow reading the company details
-    } else {
-      setIsModalOpen(false);
-      setIsMoving(true);
-    }
-  }, [currentCompany]);
+      }
+    },
+    [currentCompany]
+  );
 
   const road = useMemo(
     () =>
@@ -119,40 +115,46 @@ function MyWorkRoot() {
         if (index === carPosition) {
           return (
             <span key={index}>
-              <FaCarSide className="text-blue-500 animate-bounce" />
+              <FaCarSide className="text-4xl mt-7 text-blue-500 animate-bounce" />
             </span>
           );
         }
         if (index % 15 === 0 && index !== 0) {
           return (
             <span key={index}>
-              <GoOrganization className="text-green-500 animate-pulse" />
+              <GoOrganization className="text-6xl text-green-500 animate-pulse" />
             </span>
           );
         }
-        return <span key={index}> _ </span>;
+        return (
+          <span className="mt-10" key={index}>
+            {" "}
+            _{" "}
+          </span>
+        );
       }),
     [carPosition]
   );
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-200 to-gray-300 px-4">
-      <div className="text-2xl font-bold mb-4">MyWorkRoot</div>
+      <div className="flex flex-col items-center justify-center absolute bottom-5">
+        <div className="text-2xl font-bold mb-4">MyWorkRoot</div>
 
-      <div className="flex items-center justify-center mb-6">
-        <div className="text-lg font-semibold mr-4">Road to Success:</div>
-        <div className="flex">{road}</div>
+        <div className="flex items-center justify-center mb-6">
+          <div className="text-lg font-semibold mr-4">Road to Success:</div>
+          <div className="flex">{road}</div>
+        </div>
+
+        <button
+          onClick={startCar}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 mb-4"
+          disabled={isMoving || journeyComplete}
+        >
+          {journeyComplete ? "Journey Complete" : "Start"}
+        </button>
       </div>
 
-      <button
-        onClick={startCar}
-        className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300 mb-4"
-        disabled={isMoving || journeyComplete}
-      >
-        {journeyComplete ? "Journey Complete" : "Start"}
-      </button>
-
-      {/* Modal for "Visit" or "Skip" decision */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -176,34 +178,27 @@ function MyWorkRoot() {
           </div>
         </div>
       )}
+      <div className="flex flex-col items-center justify-center absolute top-24 mt-5 h-auto w-[20%]">
+        {messageModal && (
+          <div className=" inset-0 flex items-center justify-center absolute top-5 bg-gray-600 bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
+              <h5 className="text-lg font-semibold">{currentCompany.name}</h5>
+              <h6 className="text-sm font-medium">{currentCompany.myRole}</h6>
+              <p className="text-gray-600">{currentCompany.description}</p>
+              <p className="mt-4 text-sm text-gray-500">
+                Car will continue shortly...
+              </p>
 
-      {/* Message Modal */}
-      {messageModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-            <h5 className="text-lg font-semibold">{currentCompany.name}</h5>
-            <h6 className="text-sm font-medium">{currentCompany.myRole}</h6>
-            <p className="text-gray-600">{currentCompany.description}</p>
-            <p className="mt-4 text-sm text-gray-500">
-              Car will continue shortly...
-            </p>
+              <button
+                onClick={handleOkClick}
+                className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+              >
+                ok
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Visited Companies List */}
-      {visitedCompanies.length > 0 && (
-        <div className="mt-6 bg-white p-4 rounded-lg shadow-md w-full">
-          <div className="text-lg font-semibold">Visited Companies:</div>
-          <ul className="list-disc list-inside">
-            {visitedCompanies.map((company, index) => (
-              <li key={index} className="text-gray-700">
-                <strong>{company.name}</strong> - {company.myRole}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
