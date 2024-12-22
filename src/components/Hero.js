@@ -67,7 +67,7 @@ const Hero = () => {
 
       {/* Main Content */}
       <div className="text-center z-10">
-        <h1 className="text-6xl font-bold mb-4">
+        <h1 className="text-4xl font-bold mb-4">
           Hi, I'm <span className="text-teal-400">Dheeraj Kumar</span>
         </h1>
         <p className="text-2xl mb-6 text-gray-300">
@@ -105,7 +105,7 @@ const Hero = () => {
 
       {/* Binary Code or Photo */}
       <div
-        className="absolute top-[27%] left-[5.9%] bg-gray-900 rounded-lg border-4 border-gray-700 w-[25.4%] h-[34.7%] flex flex-col justify-center items-center overflow-hidden"
+        className="absolute top-[25.4%] left-[6.3%] bg-gray-900 rounded-lg border-4 border-gray-700 w-[25.4%] h-[34.7%] flex flex-col justify-center items-center overflow-hidden"
         style={{
           boxShadow: "0px 0px 50px rgba(0, 255, 0, 0.5)",
         }}
