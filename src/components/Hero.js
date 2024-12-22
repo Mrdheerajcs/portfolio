@@ -67,10 +67,11 @@ const Hero = () => {
 
       {/* Main Content */}
       <div className="text-center z-10">
-        <h1 className="text-4xl font-bold mb-4">
+        {/* <h1 className="text-black sm:text-red-700 md:text-green-700  lg:text-blue-700 xl:text-yellow-700 2xl:text-pink-700  text-8xl">responsive</h1> */}
+        <h1 className="md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold mb-4">
           Hi, I'm <span className="text-teal-400">Dheeraj Kumar</span>
         </h1>
-        <p className="text-2xl mb-6 text-gray-300">
+        <p className="md:text-lg lg:text-xl xl:text-2xl 2xl:text-2xl mb-6 text-gray-300">
           A Passionate{" "}
           <span className="text-teal-400">Full-Stack Developer</span>
         </p>
@@ -94,18 +95,18 @@ const Hero = () => {
       <img
         src={laptop}
         alt="Developer Illustration"
-        className="absolute bottom-10 left-5  w-[35%] opacity-75"
+        className="absolute xl:bottom-10 xl:left-5  xl:w-[35%] lg:bottom-10 lg:left-5  lg:w-[35%]lg 2xl:bottom-10 2xl:left-5  2xl:w-[35%] md:top-[9%] md:left-15  md:w-[35%] mdopacity-75"
       />
       <img
         src={tuchpad}
         alt="Touchpad"
-        className="absolute bottom-[15.3%] left-[13.3%] w-[9%] h-[7%] opacity-75 cursor-pointer"
+        className="absolute xl:bottom-[15.3%] xl:left-[13.3%] xl:w-[9%] xl:h-[7%] lg:bottom-[15.3%] lg:left-[13.3%] lg:w-[9%] lg:h-[7%] 2xl:bottom-[15.3%] 2xl:left-[13.3%] 2xl:w-[9%] 2xl:h-[7%] md:top-[21.2%] md:left-[45%] md:w-[9%] md:h-[1.8%] opacity-75 cursor-pointer"
         onClick={handleTouchpadClick}
       />
 
       {/* Binary Code or Photo */}
       <div
-        className="absolute top-[25.4%] left-[6.3%] bg-gray-900 rounded-md w-[25.2%] h-[34.6%] flex flex-col justify-center items-center overflow-hidden"
+        className="absolute xl:top-[19.1%] xl:left-[6.3%] bg-gray-900 rounded-md xl:w-[25.2%] xl:h-[34.6%] flex flex-col justify-center items-center overflow-hidden md:top-[11%] md:left-[37.4%] md:w-[25.2%] md:h-[7.2%]  2xl:top-[18.7%] 2xl:left-[5.7%] 2xl:w-[25%] 2xl:h-[38.9%] lg:top-[39.6%] lg:left-[6.7%] lg:w-[24.9%] lg:h-[27.4%]"
         style={{
           boxShadow: "0px 0px 50px rgba(0, 255, 0, 0.5)",
         }}
