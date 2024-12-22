@@ -105,13 +105,13 @@ const Hero = () => {
 
       {/* Binary Code or Photo */}
       <div
-        className="absolute top-[25.4%] left-[6.3%] bg-gray-900 rounded-lg border-4 border-gray-700 w-[25.4%] h-[34.7%] flex flex-col justify-center items-center overflow-hidden"
+        className="absolute top-[25.4%] left-[6.3%] bg-gray-900 rounded-md w-[25.2%] h-[34.6%] flex flex-col justify-center items-center overflow-hidden"
         style={{
           boxShadow: "0px 0px 50px rgba(0, 255, 0, 0.5)",
         }}
       >
         {showBinary ? (
-          <div className="absolute inset-0 text-green-500 opacity-90 text-3xl leading-relaxed pointer-events-none">
+          <div className="absolute inset-0 text-center py-3 text-green-500 opacity-90 text-3xl leading-relaxed pointer-events-none">
             {binaryRows.map((binary, idx) => (
               <div
                 key={idx}
