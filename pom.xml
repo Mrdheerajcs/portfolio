@@ -11,6 +11,7 @@
     <groupId>com.auspicius</groupId>
     <artifactId>Portfolios</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>Portfolios</name>
     <description>Portfolio management project</description>
 
@@ -66,10 +67,9 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version> <!-- Specify the version explicitly -->
+            <version>1.18.30</version> <!-- Added version for Lombok -->
             <optional>true</optional>
         </dependency>
-
 
         <!-- Test Dependencies -->
         <dependency>
@@ -99,6 +99,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                            <version>1.18.30</version> <!-- Added Lombok version here -->
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
