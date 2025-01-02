@@ -4,18 +4,16 @@ FROM openjdk:17-jdk-slim
 # Set the working directory
 WORKDIR /app
 
-# Copy the Maven project files (pom.xml) and source code (src)
+# Copy the Maven project files (pom.xml and src) into the container
 COPY pom.xml /app
 COPY src /app/src
 
-# Install Maven
+# Install Maven and build the project
 RUN apt-get update && apt-get install -y maven
+RUN mvn clean install -DskipTests  # Skip tests during build for faster execution
 
-# Build the project using Maven
-RUN mvn clean install
+# Expose the port your app will run on (using default 1111 or $PORT if set)
+EXPOSE 1111
 
-# Expose the port your app will run on (Render uses dynamic port, we expose $PORT)
-EXPOSE $PORT
-
-# Run the Java application (using $PORT for flexibility in Render environment)
+# Run the Java application with environment variable support for port
 CMD ["java", "-Dserver.port=$PORT", "-jar", "target/Portfolios-0.0.1-SNAPSHOT.war"]
