@@ -12,8 +12,8 @@ COPY src /app/src
 RUN apt-get update && apt-get install -y maven
 RUN mvn clean install -DskipTests  # Skip tests during build for faster execution
 
-# Expose the port your app will run on (using default 1111 or $PORT if set)
-EXPOSE 1111
+# Expose the port your app will run on (Render sets the PORT environment variable)
+EXPOSE 8080  # Port 8080 (Render automatically uses the $PORT variable)
 
 # Run the Java application with environment variable support for port
 CMD ["java", "-Dserver.port=$PORT", "-jar", "target/Portfolios-0.0.1-SNAPSHOT.war"]
