@@ -37,9 +37,13 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<Project> existingProject = projectRepository.findById(id);
         if (existingProject.isPresent()) {
             Project existing = existingProject.get();
+
             existing.setName(project.getName());
             existing.setDescription(project.getDescription());
-            // Set other fields as required
+            existing.setTechStack(project.getTechStack()); // Update techStack
+            existing.setRepositoryUrl(project.getRepositoryUrl());
+            existing.setLiveDemoUrl(project.getLiveDemoUrl());
+            existing.setImageUrl(project.getImageUrl());
 
             Project updatedProject = projectRepository.save(existing);
             return ResponseUtils.createSuccessResponse(updatedProject);
@@ -50,6 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
             );
         }
     }
+
 
 
     @Override
