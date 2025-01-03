@@ -1,5 +1,5 @@
-# Use Maven image to build the application
-FROM maven:3.8.7-openjdk-17 AS build
+# Use a valid Maven image with JDK 17
+FROM maven:3.8.7-eclipse-temurin-17 AS build
 
 # Set the working directory in the build container
 WORKDIR /app
