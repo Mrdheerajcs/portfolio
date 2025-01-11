@@ -1,16 +1,19 @@
 package com.auspicius.Services.Impl;
 
 import com.auspicius.Entity.Portfolio;
+import com.auspicius.Entity.User;
 import com.auspicius.Repository.PortfolioRepository;
+import com.auspicius.Repository.UserRepository;
 import com.auspicius.Services.PortfolioService;
 import com.auspicius.responce.ApiResponse;
+import com.auspicius.responce.PortfolioReq;
 import com.auspicius.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
@@ -18,17 +21,28 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
-    public Portfolio getPortfolioByUserId(UUID userId) {
-        return portfolioRepository.findByUserId(userId)
+    public Portfolio getPortfolioByUserId(Integer userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found for userId: " + userId));
+        return portfolioRepository.findByUserId(user)
                 .orElseThrow(() -> new RuntimeException("Portfolio not found for userId: " + userId));
     }
 
     @Override
-    public ApiResponse<Portfolio> createPortfolio(Portfolio portfolio) {
+    public ApiResponse<Portfolio> createPortfolio(PortfolioReq portfolioReq) {
         try {
+            validatePortfolioReq(portfolioReq); // Validate incoming request
+            Portfolio portfolio = mapToEntity(portfolioReq);
             Portfolio savedPortfolio = portfolioRepository.save(portfolio);
             return ResponseUtils.createSuccessResponse(savedPortfolio);
+        } catch (IllegalArgumentException e) {
+            return ResponseUtils.createFailureResponse(
+                    e.getMessage(), HttpStatus.BAD_REQUEST.value()
+            );
         } catch (Exception e) {
             return ResponseUtils.createFailureResponse(
                     "An error occurred while saving the portfolio.",
@@ -38,7 +52,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ApiResponse<Portfolio> getPortfolioById(UUID id) {
+    public ApiResponse<Portfolio> getPortfolioById(Integer id) {
         return portfolioRepository.findById(id)
                 .map(ResponseUtils::createSuccessResponse)
                 .orElseGet(() -> ResponseUtils.createFailureResponse(
@@ -60,12 +74,13 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ApiResponse<Portfolio> updatePortfolio(UUID id, Portfolio portfolio) {
+    public ApiResponse<Portfolio> updatePortfolio(Integer id, PortfolioReq portfolioReq) {
         return portfolioRepository.findById(id)
                 .map(existingPortfolio -> {
-                    portfolio.setId(id);
-                    Portfolio updatedPortfolio = portfolioRepository.save(portfolio);
-                    return ResponseUtils.createSuccessResponse(updatedPortfolio);
+                    Portfolio updatedPortfolio = mapToEntity(portfolioReq);
+                    updatedPortfolio.setId(id);
+                    Portfolio savedPortfolio = portfolioRepository.save(updatedPortfolio);
+                    return ResponseUtils.createSuccessResponse(savedPortfolio);
                 })
                 .orElseGet(() -> ResponseUtils.createFailureResponse(
                         "Portfolio not found.", HttpStatus.NOT_FOUND.value()
@@ -73,7 +88,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ApiResponse<String> deletePortfolio(UUID id) {
+    public ApiResponse<String> deletePortfolio(Integer id) {
         try {
             if (portfolioRepository.existsById(id)) {
                 portfolioRepository.deleteById(id);
@@ -91,4 +106,34 @@ public class PortfolioServiceImpl implements PortfolioService {
         }
     }
 
+    // Helper method to map PortfolioReq to Portfolio
+    private Portfolio mapToEntity(PortfolioReq portfolioReq) {
+        Portfolio portfolio = new Portfolio();
+        portfolio.setUserId(portfolioReq.getUserId());
+        portfolio.setTitle(portfolioReq.getTitle());
+        portfolio.setTheme(portfolioReq.getTheme());
+        portfolio.setIsPublic(portfolioReq.getIsPublic());
+        portfolio.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+        portfolio.setUpdatedOn(new Timestamp(System.currentTimeMillis()));
+        return portfolio;
+    }
+
+    // Helper method to validate PortfolioReq
+    private void validatePortfolioReq(PortfolioReq portfolioReq) {
+        if (portfolioReq.getUserId() == null || portfolioReq.getUserId().getId() == null) {
+            throw new IllegalArgumentException("User ID is required and cannot be null.");
+        }
+        if (portfolioReq.getTitle() == null || portfolioReq.getTitle().isBlank()) {
+            throw new IllegalArgumentException("Title is required and cannot be blank.");
+        }
+        if (portfolioReq.getTheme() == null || portfolioReq.getTheme().isBlank()) {
+            throw new IllegalArgumentException("Theme is required and cannot be blank.");
+        }
+        if (portfolioReq.getIsPublic() == null) {
+            throw new IllegalArgumentException("Public status is required and cannot be null.");
+        }
+        if (!userRepository.existsById(portfolioReq.getUserId().getId())) {
+            throw new IllegalArgumentException("The specified user does not exist.");
+        }
+    }
 }

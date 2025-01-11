@@ -2,20 +2,21 @@ package com.auspicius.Services;
 
 import com.auspicius.Entity.Portfolio;
 import com.auspicius.responce.ApiResponse;
+import com.auspicius.responce.PortfolioReq;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface PortfolioService {
-    Portfolio getPortfolioByUserId(UUID userId);
+    Portfolio getPortfolioByUserId(Integer userId);
 
-    ApiResponse<Portfolio> createPortfolio(Portfolio portfolio);
 
-    ApiResponse<Portfolio> getPortfolioById(UUID id);
+    ApiResponse<Portfolio> createPortfolio(PortfolioReq portfolioReq);
+
+    ApiResponse<Portfolio> getPortfolioById(Integer id);
 
     ApiResponse<List<Portfolio>> getAllPortfolios();
 
-    ApiResponse<Portfolio> updatePortfolio(UUID id, Portfolio portfolio);
+    ApiResponse<Portfolio> updatePortfolio(Integer id, PortfolioReq portfolioReq);
 
-    ApiResponse<String> deletePortfolio(UUID id);
+    ApiResponse<String> deletePortfolio(Integer id);
 }

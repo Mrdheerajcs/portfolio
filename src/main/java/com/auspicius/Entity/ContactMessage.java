@@ -1,24 +1,34 @@
 package com.auspicius.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.UUID;
+import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Table(name = "ContactMessages")
 public class ContactMessage {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
     @ManyToOne
-    private Portfolio portfolio;
+    private Portfolio portfolioId;
+
+    @ManyToOne
+    private User userId;
 
     @Column(name = "sender_email")
     private String email;
 
     @Column(length = 2000)
     private String message;
+
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdOn;
+    private Timestamp updatedOn;
 }
 

@@ -1,118 +1,44 @@
 package com.auspicius.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Table(name = "Portfolios")
 public class Portfolio {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
     @OneToOne
-    private User user;
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<Education> educations;
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<Experience> experiences;
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<Project> projects;
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<Skill> skills;
-
-    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL)
-    private List<ContactMessage> contactMessages;
+    private User userId;
 
     private String title; // e.g., "Software Developer Portfolio"
     private String theme; // Optional: Theme or styling preference
     private Boolean isPublic; // Whether the portfolio is public
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdOn;
+    private Timestamp updatedOn;
 
 
-    public UUID getId() {
-        return id;
-    }
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    private List<Education> educations;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    private List<Experience> experiences;
 
-    public User getUser() {
-        return user;
-    }
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    private List<Project> projects;
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    private List<Skill> skills;
 
-    public List<Education> getEducations() {
-        return educations;
-    }
-
-    public void setEducations(List<Education> educations) {
-        this.educations = educations;
-    }
-
-    public List<Experience> getExperiences() {
-        return experiences;
-    }
-
-    public void setExperiences(List<Experience> experiences) {
-        this.experiences = experiences;
-    }
-
-    public List<Project> getProjects() {
-        return projects;
-    }
-
-    public void setProjects(List<Project> projects) {
-        this.projects = projects;
-    }
-
-    public List<Skill> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<Skill> skills) {
-        this.skills = skills;
-    }
-
-    public List<ContactMessage> getContactMessages() {
-        return contactMessages;
-    }
-
-    public void setContactMessages(List<ContactMessage> contactMessages) {
-        this.contactMessages = contactMessages;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public Boolean getPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(Boolean aPublic) {
-        isPublic = aPublic;
-    }
+    @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    private List<ContactMessage> contactMessages;
 }

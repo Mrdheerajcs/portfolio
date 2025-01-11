@@ -1,26 +1,29 @@
 package com.auspicius.Entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.UUID;
+import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Table(name = "Skills")
 public class Skill {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
     @ManyToOne
-    private User user;
+    private User userId;
 
     @ManyToOne
-    private Portfolio portfolio;
+    private Portfolio portfolioId;
 
     private String name;
     private String level; // Beginner, Intermediate, Expert
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdOn;
+    private Timestamp updatedOn;
 }

@@ -1,30 +1,39 @@
 package com.auspicius.Entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.UUID;
+import java.sql.Timestamp;
 
 @Entity
-@Data
+@Getter
+@Setter
+@Table(name = "Educations")
 public class Education {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
     @ManyToOne
-    private User user;
+    private User userId;
 
     @ManyToOne
-    private Portfolio portfolio;
+    private Portfolio portfolioId;
 
+    private String boardName;
     private String institutionName;
     private String degree;
     private int startYear;
-    private Integer endYear; // Nullable for ongoing education
+    private Integer endYear;
+    private Boolean status;
+
 
     @Column(length = 2000)
     private String description;
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdOn;
+    private Timestamp updatedOn;
 }
 
 

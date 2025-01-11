@@ -1,25 +1,29 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
+@Table(name = "Projects")
 public class Project {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
 
     @ManyToOne
-    private User user;
+    @JsonIgnore
+    private User userId;
 
     @ManyToOne
-    private Portfolio portfolio;
+    @JsonIgnore
+    private Portfolio portfolioId;
 
     private String name;
 
@@ -32,4 +36,7 @@ public class Project {
     private String repositoryUrl;
     private String liveDemoUrl;
     private String imageUrl;
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdOn;
+    private Timestamp updatedOn;
 }

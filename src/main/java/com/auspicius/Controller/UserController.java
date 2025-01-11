@@ -3,36 +3,39 @@ package com.auspicius.Controller;
 import com.auspicius.Entity.User;
 import com.auspicius.Services.UserService;
 import com.auspicius.responce.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping("/{id}")
-    public ApiResponse<User> getUserById(@PathVariable UUID id) {
-        return userService.getUserById(id);
+    @GetMapping("/getBy/{id}")
+    public ResponseEntity<ApiResponse<User>> getUserById(@PathVariable Integer id) {
+        ApiResponse<User> response = userService.getUserById(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @PostMapping("/save")
-    public ApiResponse<User> createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<User>> createUser(@Valid @RequestBody User user) {
+        ApiResponse<User> response = userService.createUser(user);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @PutMapping("/{id}")
-    public ApiResponse<User> updateUser(@PathVariable UUID id, @RequestBody User user) {
-        return userService.updateUser(id, user);
+    @PutMapping("/updateBy/{id}")
+    public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Integer id, @Valid @RequestBody User user) {
+        ApiResponse<User> response = userService.updateUser(id, user);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ApiResponse<String> deleteUser(@PathVariable UUID id) {
-        return userService.deleteUser(id);
+    @DeleteMapping("/deleteBy/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteUser(@PathVariable Integer id) {
+        ApiResponse<String> response = userService.deleteUser(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 }
