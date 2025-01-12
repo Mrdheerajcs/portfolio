@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class Portfolio {
 
 
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Education> educations;
 
     @OneToMany(mappedBy = "portfolioId", cascade = CascadeType.ALL)

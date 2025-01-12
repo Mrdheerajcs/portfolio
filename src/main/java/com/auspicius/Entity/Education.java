@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ public class Education {
     private User userId;
 
     @ManyToOne
+    @JsonBackReference
     private Portfolio portfolioId;
 
     private String boardName;
