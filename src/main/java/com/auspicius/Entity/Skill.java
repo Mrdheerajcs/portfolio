@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,11 @@ public class Skill {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnore
     private User userId;
 
     @ManyToOne
+    @JsonIgnore
     private Portfolio portfolioId;
 
     private String name;

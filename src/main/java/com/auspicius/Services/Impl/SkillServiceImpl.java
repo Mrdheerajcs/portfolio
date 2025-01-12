@@ -11,6 +11,8 @@ import com.auspicius.helperUtil.Helper;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.responce.SkillReq;
 import com.auspicius.utils.ResponseUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -29,30 +31,30 @@ public class SkillServiceImpl implements SkillService {
     @Autowired
     private PortfolioRepository portfolioRepository;
 
+    private static final Logger logger = LoggerFactory.getLogger(SkillServiceImpl.class);
+
     @Override
     public ApiResponse<Skill> createSkill(SkillReq skillReq) {
         try {
             validateSkillReq(skillReq);
-
             Skill skill = mapToEntity(skillReq);
 
             Skill savedSkill = skillRepository.save(skill);
 
-            // Return a success response with the saved education entity
             return ResponseUtils.createSuccessResponse(savedSkill);
         } catch (IllegalArgumentException e) {
-            // Handle invalid data (e.g., missing or incorrect fields)
             return ResponseUtils.createFailureResponse(
-                    e.getMessage(), HttpStatus.BAD_REQUEST.value()
+                    e.getMessage(),
+                    HttpStatus.BAD_REQUEST.value()
             );
         } catch (Exception e) {
-            // Handle other unexpected errors
             return ResponseUtils.createFailureResponse(
-                    "An error occurred while saving skill details.",
+                    "An error occurred while creating the skill.",
                     HttpStatus.INTERNAL_SERVER_ERROR.value()
             );
         }
     }
+
 
     @Override
     public ApiResponse<Skill> updateSkill(Integer id, SkillReq skillReq) {
@@ -120,26 +122,18 @@ public class SkillServiceImpl implements SkillService {
     @Override
     public ApiResponse<String> deleteSkill(Integer id) {
         try {
-            // Check if the education exists, and delete it if found
-            if (skillRepository.existsById(id)) {
-                skillRepository.deleteById(id);
-
-                // Return a success response indicating that the education was deleted
-                return ResponseUtils.createSuccessResponse("Education deleted successfully.");
-            } else {
-                // Handle the case where the education with the given ID is not found
-                return ResponseUtils.createFailureResponse(
-                        "Education not found.", HttpStatus.NOT_FOUND.value()
-                );
-            }
+            Skill skill = skillRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Skill not found."));
+            skillRepository.delete(skill);
+            return ResponseUtils.createSuccessResponse("Skill deleted successfully.");
         } catch (Exception e) {
-            // Handle any errors during the deletion of the education record
             return ResponseUtils.createFailureResponse(
-                    "An error occurred while deleting the education record.",
+                    "An error occurred while deleting the skill record.",
                     HttpStatus.INTERNAL_SERVER_ERROR.value()
             );
         }
     }
+
 
     private void validateSkillReq(SkillReq skillReq) {
         if (skillReq.getUserId() == null || !userRepository.existsById(skillReq.getUserId())) {
@@ -161,14 +155,17 @@ public class SkillServiceImpl implements SkillService {
 
         User user = userRepository.findById(skillReq.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        Portfolio portfolio = portfolioRepository.findById(skillReq.getUserId())
+        Portfolio portfolio = portfolioRepository.findById(skillReq.getPortfolioId())
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found."));
 
         skill.setUserId(user);
         skill.setPortfolioId(portfolio);
         skill.setName(skillReq.getName());
         skill.setLevel(skillReq.getLevel());
+        skill.setCreatedOn(Helper.getCurrentTimeStamp());
+        skill.setUpdatedOn(Helper.getCurrentTimeStamp());
 
         return skill;
     }
+
 }
