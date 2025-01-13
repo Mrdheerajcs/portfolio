@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Portfolio {
     private Integer id;
 
     @OneToOne
+    @JsonIgnore
     private User userId;
 
     private String title; // e.g., "Software Developer Portfolio"

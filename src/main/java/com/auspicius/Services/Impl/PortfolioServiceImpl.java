@@ -107,20 +107,32 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     // Helper method to map PortfolioReq to Portfolio
+    // Helper method to map PortfolioReq to Portfolio
+    // Helper method to map PortfolioReq to Portfolio
     private Portfolio mapToEntity(PortfolioReq portfolioReq) {
+        // Get the User object using the userId from PortfolioReq
+        Integer userId = portfolioReq.getUserId(); // Assuming portfolioReq provides the user ID as Integer
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+
+        // Create a new Portfolio entity and map fields
         Portfolio portfolio = new Portfolio();
-        portfolio.setUserId(portfolioReq.getUserId());
+        portfolio.setUserId(user); // Set the User object (not the Integer ID)
         portfolio.setTitle(portfolioReq.getTitle());
         portfolio.setTheme(portfolioReq.getTheme());
         portfolio.setIsPublic(portfolioReq.getIsPublic());
-        portfolio.setCreatedOn(new Timestamp(System.currentTimeMillis()));
-        portfolio.setUpdatedOn(new Timestamp(System.currentTimeMillis()));
+
+        // Set timestamps
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        portfolio.setCreatedOn(currentTime);
+        portfolio.setUpdatedOn(currentTime);
+
         return portfolio;
     }
 
     // Helper method to validate PortfolioReq
     private void validatePortfolioReq(PortfolioReq portfolioReq) {
-        if (portfolioReq.getUserId() == null || portfolioReq.getUserId().getId() == null) {
+        if (portfolioReq.getUserId() == null || portfolioReq.getUserId() == null) {
             throw new IllegalArgumentException("User ID is required and cannot be null.");
         }
         if (portfolioReq.getTitle() == null || portfolioReq.getTitle().isBlank()) {
@@ -132,7 +144,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (portfolioReq.getIsPublic() == null) {
             throw new IllegalArgumentException("Public status is required and cannot be null.");
         }
-        if (!userRepository.existsById(portfolioReq.getUserId().getId())) {
+        if (!userRepository.existsById(portfolioReq.getUserId())) {
             throw new IllegalArgumentException("The specified user does not exist.");
         }
     }
