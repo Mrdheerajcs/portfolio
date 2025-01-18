@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -51,13 +52,19 @@ public class PortfolioServiceImpl implements PortfolioService {
         }
     }
 
-    @Override
     public ApiResponse<Portfolio> getPortfolioById(Integer id) {
-        return portfolioRepository.findById(id)
-                .map(ResponseUtils::createSuccessResponse)
-                .orElseGet(() -> ResponseUtils.createFailureResponse(
-                        "Portfolio not found.", HttpStatus.NOT_FOUND.value()
-                ));
+        Portfolio portfolio = portfolioRepository.findPortfolioById(id);
+
+        if (portfolio == null) {
+            return ResponseUtils.createFailureResponse("Portfolio not found.", HttpStatus.NOT_FOUND.value());
+        }
+
+        portfolio.setSkills(new HashSet<>(portfolioRepository.findActiveSkill(id)));
+        portfolio.setEducations(new HashSet<>(portfolioRepository.findActiveEducations(id)));
+        portfolio.setExperiences(new HashSet<>(portfolioRepository.findActiveExperiences(id)));
+        portfolio.setProjects(new HashSet<>(portfolioRepository.findActiveProjects(id)));
+
+        return ResponseUtils.createSuccessResponse(portfolio);
     }
 
     @Override

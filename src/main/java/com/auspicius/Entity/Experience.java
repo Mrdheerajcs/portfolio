@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +17,13 @@ public class Experience {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnore
     private User userId;
 
     @ManyToOne
+    @JsonIgnore
     private Portfolio portfolioId;
-
+    private Boolean status;
     private String companyName;
     private String role;
     private String startDate; // Format: YYYY-MM-DD

@@ -23,7 +23,7 @@ public class Skill {
     @ManyToOne
     @JsonIgnore
     private Portfolio portfolioId;
-
+    private Boolean status;
     private String name;
     private String level; // Beginner, Intermediate, Expert
     @Column(nullable = false, updatable = false)

@@ -156,8 +156,14 @@ public class EducationServiceImpl implements EducationService {
         if (educationReq.getUserId() == null || !userRepository.existsById(educationReq.getUserId())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
+        if (!userRepository.isUserActiveById(educationReq.getUserId())) {
+            throw new IllegalArgumentException("User is deactivated");
+        }
         if (educationReq.getPortfolioId() == null || !portfolioRepository.existsById(educationReq.getPortfolioId())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
+        }
+        if (!portfolioRepository.isPortfolioActiveById(educationReq.getPortfolioId())) {
+            throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (educationReq.getBoardName() == null || educationReq.getBoardName().isBlank()) {
             throw new IllegalArgumentException("Board name is required.");

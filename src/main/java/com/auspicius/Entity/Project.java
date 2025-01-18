@@ -32,7 +32,9 @@ public class Project {
 
     @ElementCollection
     private List<String> techStack;
-
+    private Boolean status;
+    private String startDate;
+    private String endDate;
     private String repositoryUrl;
     private String liveDemoUrl;
     private String imageUrl;

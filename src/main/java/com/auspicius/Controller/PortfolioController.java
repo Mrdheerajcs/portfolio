@@ -29,7 +29,7 @@ public class PortfolioController {
     @GetMapping("getById/{id}")
     public ResponseEntity<ApiResponse<Portfolio>> getPortfolioById(@PathVariable Integer id) {
         ApiResponse<Portfolio> response = portfolioService.getPortfolioById(id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     @GetMapping("/getAll")

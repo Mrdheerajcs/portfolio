@@ -4,18 +4,20 @@ package com.auspicius.Services;
 import com.auspicius.Entity.Project;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.responce.ProjectDTO;
+import com.auspicius.responce.ProjectReq;
 
 import java.util.List;
 
 public interface ProjectService {
 
-    ApiResponse<Project> createProject(Project project);
 
-    ApiResponse<Project> updateProject(Integer id, Project project);
+    ApiResponse<Project> createProject(ProjectReq projectReq);
 
-    ApiResponse<Void> deleteProject(Integer id);
+    ApiResponse<Project> updateProject(Integer id, ProjectReq projectReq);
 
-    ApiResponse<List<ProjectDTO>> findAllProjects();
+//    ApiResponse<ProjectDTO> getProjectById(Integer id);
 
-    ApiResponse<Project> findProjectById(Integer id);
+//    ApiResponse<List<ProjectDTO>> getAllProjects();
+
+    ApiResponse<String> deleteProject(Integer id);
 }

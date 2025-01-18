@@ -1,16 +1,16 @@
 package com.auspicius.Controller;
 
 import com.auspicius.Entity.Project;
-import com.auspicius.Services.ProjectService;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.responce.ProjectDTO;
-import jakarta.validation.Valid;
+import com.auspicius.responce.ProjectReq;
+import com.auspicius.Services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -18,39 +18,32 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
-    @PostMapping("/save")
-    public ResponseEntity<ApiResponse<Project>> createProject(@RequestBody @Valid Project project) {
-        ApiResponse<Project> response = projectService.createProject(project);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    @PostMapping("/create")
+    public ResponseEntity<ApiResponse<Project>> createProject(@RequestBody ProjectReq projectReq) {
+        ApiResponse<Project> response = projectService.createProject(projectReq);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @PutMapping("/updateBy/{id}")
-    public ResponseEntity<ApiResponse<Project>> updateProject(
-            @PathVariable Integer id,
-            @RequestBody @Valid Project project) {
-        ApiResponse<Project> response = projectService.updateProject(id, project);
-        return new ResponseEntity<>(response, response.getStatus() == HttpStatus.OK.value() ? HttpStatus.OK : HttpStatus.BAD_REQUEST);
+    @PutMapping("/updateById/{id}")
+    public ResponseEntity<ApiResponse<Project>> updateProject(@PathVariable Integer id, @RequestBody ProjectReq projectReq) {
+        ApiResponse<Project> response = projectService.updateProject(id, projectReq);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
-    @DeleteMapping("deleteBy/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable Integer id) {
-        ApiResponse<Void> response = projectService.deleteProject(id);
-        return new ResponseEntity<>(response, response.getStatus() == HttpStatus.OK.value() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+//    @GetMapping("/getById/{id}")
+//    public ResponseEntity<ApiResponse<ProjectDTO>> getProjectById(@PathVariable Integer id) {
+//        ApiResponse<ProjectDTO> response = projectService.getProjectById(id);
+//        return ResponseEntity.status(response.getStatus()).body(response);
+//    }
+//
+//    @GetMapping("/getAll")
+//    public ResponseEntity<ApiResponse<List<ProjectDTO>>> getAllProjects() {
+//        ApiResponse<List<ProjectDTO>> response = projectService.getAllProjects();
+//        return ResponseEntity.status(response.getStatus()).body(response);
+//    }
+
+    @DeleteMapping("/deleteById/{id}")
+    public ApiResponse<String> deleteProject(@PathVariable Integer id) {
+        return projectService.deleteProject(id);
     }
-    @GetMapping("/getAll")
-    public ResponseEntity<ApiResponse<List<ProjectDTO>>> findAllProjects() {
-        ApiResponse<List<ProjectDTO>> response = projectService.findAllProjects();
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-
-
-    @GetMapping("/findById/{id}")
-    public ResponseEntity<ApiResponse<Project>> findProjectById(@PathVariable Integer id) {
-        ApiResponse<Project> response = projectService.findProjectById(id);
-        return new ResponseEntity<>(response, response.getStatus() == HttpStatus.OK.value() ? HttpStatus.OK : HttpStatus.NOT_FOUND);
-    }
-
-
-
 }
