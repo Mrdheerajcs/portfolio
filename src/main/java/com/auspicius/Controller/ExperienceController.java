@@ -32,8 +32,8 @@ public class ExperienceController {
     }
 
     @GetMapping("/getByPortfolio/{id}")
-    public ResponseEntity<ApiResponse<List<ExperienceDTO>>> getExperienceByPortfolioId(@PathVariable Integer id) {
-        ApiResponse<List<ExperienceDTO>> response = experienceService.getExperienceByPortfolioId(id);
+    public ResponseEntity<ApiResponse<List<ExperienceDTO>>> getExperienceByportfolio(@PathVariable Integer id) {
+        ApiResponse<List<ExperienceDTO>> response = experienceService.getExperienceByportfolio(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

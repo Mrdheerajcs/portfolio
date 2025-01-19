@@ -153,16 +153,16 @@ public class EducationServiceImpl implements EducationService {
 
     // Private method to validate the incoming education request
     private void validateEducationReq(EducationReq educationReq) {
-        if (educationReq.getUserId() == null || !userRepository.existsById(educationReq.getUserId())) {
+        if (educationReq.getUser() == null || !userRepository.existsById(educationReq.getUser())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
-        if (!userRepository.isUserActiveById(educationReq.getUserId())) {
+        if (!userRepository.isUserActiveById(educationReq.getUser())) {
             throw new IllegalArgumentException("User is deactivated");
         }
-        if (educationReq.getPortfolioId() == null || !portfolioRepository.existsById(educationReq.getPortfolioId())) {
+        if (educationReq.getPortfolio() == null || !portfolioRepository.existsById(educationReq.getPortfolio())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
         }
-        if (!portfolioRepository.isPortfolioActiveById(educationReq.getPortfolioId())) {
+        if (!portfolioRepository.isPortfolioActiveById(educationReq.getPortfolio())) {
             throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (educationReq.getBoardName() == null || educationReq.getBoardName().isBlank()) {
@@ -183,13 +183,13 @@ public class EducationServiceImpl implements EducationService {
     private Education mapToEntity(EducationReq educationReq) {
         Education education = new Education();
 
-        User user = userRepository.findById(educationReq.getUserId())
+        User user = userRepository.findById(educationReq.getUser())
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        Portfolio portfolio = portfolioRepository.findById(educationReq.getPortfolioId())
+        Portfolio portfolio = portfolioRepository.findById(educationReq.getPortfolio())
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found."));
 
-        education.setUserId(user);
-        education.setPortfolioId(portfolio);
+        education.setUser(user);
+        education.setPortfolio(portfolio);
         education.setBoardName(educationReq.getBoardName());
         education.setInstitutionName(educationReq.getInstitutionName());
         education.setDegree(educationReq.getDegree());

@@ -16,7 +16,7 @@ public interface   ExperienceService {
 
     ApiResponse<ExperienceDTO> getExperienceById(Integer id);
 
-    ApiResponse<List<ExperienceDTO>> getExperienceByPortfolioId(Integer portfolioId);
+    ApiResponse<List<ExperienceDTO>> getExperienceByportfolio(Integer portfolio);
 
     ApiResponse<List<ExperienceDTO>> getAllExperiences();
 

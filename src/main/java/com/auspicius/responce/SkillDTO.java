@@ -9,8 +9,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class SkillDTO {
     private Integer id;
-    private Integer userId;
-    private Integer portfolioId;
+    private Integer user;
+    private Integer portfolio;
     private String name;
     private String level;
     private Timestamp createdOn;

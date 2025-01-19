@@ -75,11 +75,11 @@ public class SkillServiceImpl implements SkillService {
     }
 
     @Override
-    public ApiResponse<List<SkillDTO>> getSkillByPortfolioId(Integer portfolioId) {
+    public ApiResponse<List<SkillDTO>> getSkillByportfolio(Integer portfolio) {
         try {
-            Portfolio portfolio = portfolioRepository.findById(portfolioId)
-                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
-            List<Skill> skills = skillRepository.findByPortfolioId(portfolio);
+            Portfolio portfolios = portfolioRepository.findById(portfolio)
+                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolio));
+            List<Skill> skills = skillRepository.findByportfolio(portfolios);
             List<SkillDTO> skillDTOs = skills.stream().map(this::convertToDTO).toList();
             return ResponseUtils.createSuccessResponse(skillDTOs);
         } catch (Exception e) {
@@ -126,16 +126,16 @@ public class SkillServiceImpl implements SkillService {
     }
 
     private void validateSkillReq(SkillReq skillReq) {
-        if (skillReq.getUserId() == null || !userRepository.existsById(skillReq.getUserId())) {
+        if (skillReq.getUser() == null || !userRepository.existsById(skillReq.getUser())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
-        if (!userRepository.isUserActiveById(skillReq.getUserId())) {
+        if (!userRepository.isUserActiveById(skillReq.getUser())) {
             throw new IllegalArgumentException("User is deactivated");
         }
-        if (skillReq.getPortfolioId() == null || !portfolioRepository.existsById(skillReq.getPortfolioId())) {
+        if (skillReq.getPortfolio() == null || !portfolioRepository.existsById(skillReq.getPortfolio())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
         }
-        if (!portfolioRepository.isPortfolioActiveById(skillReq.getPortfolioId())) {
+        if (!portfolioRepository.isPortfolioActiveById(skillReq.getPortfolio())) {
             throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (skillReq.getName() == null || skillReq.getName().isBlank()) {
@@ -148,12 +148,12 @@ public class SkillServiceImpl implements SkillService {
 
     private Skill mapToEntity(SkillReq skillReq) {
         Skill skill = new Skill();
-        User user = userRepository.findById(skillReq.getUserId())
+        User user = userRepository.findById(skillReq.getUser())
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        Portfolio portfolio = portfolioRepository.findById(skillReq.getPortfolioId())
+        Portfolio portfolio = portfolioRepository.findById(skillReq.getPortfolio())
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found."));
-        skill.setUserId(user);
-        skill.setPortfolioId(portfolio);
+        skill.setUser(user);
+        skill.setPortfolio(portfolio);
         skill.setName(skillReq.getName());
         skill.setLevel(skillReq.getLevel());
         skill.setCreatedOn(Helper.getCurrentTimeStamp());
@@ -164,8 +164,8 @@ public class SkillServiceImpl implements SkillService {
     private SkillDTO convertToDTO(Skill skill) {
         return new SkillDTO(
                 skill.getId(),
-                skill.getUserId() != null ? skill.getUserId().getId() : null,
-                skill.getPortfolioId() != null ? skill.getPortfolioId().getId() : null,
+                skill.getUser() != null ? skill.getUser().getId() : null,
+                skill.getPortfolio() != null ? skill.getPortfolio().getId() : null,
                 skill.getName(),
                 skill.getLevel(),
                 skill.getCreatedOn(),

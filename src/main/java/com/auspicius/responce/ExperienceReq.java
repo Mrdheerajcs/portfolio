@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class ExperienceReq {
 
-    private Integer userId;
-    private Integer portfolioId;
+    private Integer user;
+    private Integer portfolio;
     private String companyName;
     private String role;
     private String startDate;

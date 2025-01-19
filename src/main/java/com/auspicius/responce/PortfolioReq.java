@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Setter
 public class PortfolioReq {
 
-    private Integer userId;
+    private Integer user;
     private String title; // e.g., "Software Developer Portfolio"
     private String theme; // Optional: Theme or styling preference
     private Boolean isPublic; // Whether the portfolio is public

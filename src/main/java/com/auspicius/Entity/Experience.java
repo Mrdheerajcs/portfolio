@@ -17,12 +17,15 @@ public class Experience {
     private Integer id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
-    private User userId;
+    private User user;
 
-    @ManyToOne
+@ManyToOne
+    @JoinColumn(name = "portfolio_id", nullable = false)
     @JsonIgnore
-    private Portfolio portfolioId;
+    private Portfolio portfolio;
+
     private Boolean status;
     private String companyName;
     private String role;

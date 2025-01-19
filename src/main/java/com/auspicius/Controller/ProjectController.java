@@ -33,8 +33,8 @@ public class ProjectController {
     }
 
     @GetMapping("/getByPortfolio/{id}")
-    public ResponseEntity<ApiResponse<List<ProjectDTO>>> getProjectByPortfolioId(@PathVariable Integer id) {
-        ApiResponse<List<ProjectDTO>> response = projectService.getProjectByPortfolioId(id);
+    public ResponseEntity<ApiResponse<List<ProjectDTO>>> getProjectByportfolio(@PathVariable Integer id) {
+        ApiResponse<List<ProjectDTO>> response = projectService.getProjectByportfolio(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

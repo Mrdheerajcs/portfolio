@@ -74,11 +74,11 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     @Override
-    public ApiResponse<List<ExperienceDTO>> getExperienceByPortfolioId(Integer portfolioId) {
+    public ApiResponse<List<ExperienceDTO>> getExperienceByportfolio(Integer portfolio) {
         try {
-            Portfolio portfolio = portfolioRepository.findById(portfolioId)
-                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
-            List<Experience> experiences = experienceRepository.findByPortfolioId(portfolio);
+            Portfolio portfolios = portfolioRepository.findById(portfolio)
+                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolio));
+            List<Experience> experiences = experienceRepository.findByportfolio(portfolios);
             List<ExperienceDTO> experienceDTOS = experiences.stream().map(this::convertToDTO).toList();
             return ResponseUtils.createSuccessResponse(experienceDTOS);
         } catch (Exception e) {
@@ -124,16 +124,16 @@ public class ExperienceServiceImpl implements ExperienceService {
     }
 
     private void validateExperienceReq(ExperienceReq experienceReq) {
-        if (experienceReq.getUserId() == null || !userRepository.existsById(experienceReq.getUserId())) {
+        if (experienceReq.getUser() == null || !userRepository.existsById(experienceReq.getUser())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
-        if (!userRepository.isUserActiveById(experienceReq.getUserId())) {
+        if (!userRepository.isUserActiveById(experienceReq.getUser())) {
             throw new IllegalArgumentException("User is deactivated");
         }
-        if (experienceReq.getPortfolioId() == null || !portfolioRepository.existsById(experienceReq.getPortfolioId())) {
+        if (experienceReq.getPortfolio() == null || !portfolioRepository.existsById(experienceReq.getPortfolio())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
         }
-        if (!portfolioRepository.isPortfolioActiveById(experienceReq.getPortfolioId())) {
+        if (!portfolioRepository.isPortfolioActiveById(experienceReq.getPortfolio())) {
             throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (experienceReq.getCompanyName() == null || experienceReq.getCompanyName().isBlank()) {
@@ -149,12 +149,12 @@ public class ExperienceServiceImpl implements ExperienceService {
 
     private Experience mapToEntity(ExperienceReq experienceReq) {
         Experience experience = new Experience();
-        User user = userRepository.findById(experienceReq.getUserId())
+        User user = userRepository.findById(experienceReq.getUser())
                 .orElseThrow(() -> new IllegalArgumentException("User not found."));
-        Portfolio portfolio = portfolioRepository.findById(experienceReq.getPortfolioId())
+        Portfolio portfolio = portfolioRepository.findById(experienceReq.getPortfolio())
                 .orElseThrow(() -> new IllegalArgumentException("Portfolio not found."));
-        experience.setUserId(user);
-        experience.setPortfolioId(portfolio);
+        experience.setUser(user);
+        experience.setPortfolio(portfolio);
         experience.setCompanyName(experienceReq.getCompanyName());
         experience.setRole(experienceReq.getRole());
         experience.setStartDate(experienceReq.getStartDate());

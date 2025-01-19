@@ -32,8 +32,8 @@ public class SkillController {
     }
 
     @GetMapping("/getByPortfolio/{id}")
-    public ResponseEntity<ApiResponse<List<SkillDTO>>> getSkillsByPortfolioId(@PathVariable Integer id) {
-        ApiResponse<List<SkillDTO>> response = skillService.getSkillByPortfolioId(id);
+    public ResponseEntity<ApiResponse<List<SkillDTO>>> getSkillsByportfolio(@PathVariable Integer id) {
+        ApiResponse<List<SkillDTO>> response = skillService.getSkillByportfolio(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 

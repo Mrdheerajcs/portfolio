@@ -19,7 +19,7 @@ public interface ProjectService {
 
     ApiResponse<ProjectDTO> getProjectById(Integer id);
 
-    ApiResponse<List<ProjectDTO>> getProjectByPortfolioId(Integer portfolioId);
+    ApiResponse<List<ProjectDTO>> getProjectByportfolio(Integer portfolio);
 
     ApiResponse<List<ProjectDTO>> getAllProjects();
 

@@ -83,11 +83,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ApiResponse<List<ProjectDTO>> getProjectByPortfolioId(Integer portfolioId) {
+    public ApiResponse<List<ProjectDTO>> getProjectByportfolio(Integer portfolio) {
         try {
-            Portfolio portfolio = portfolioRepository.findById(portfolioId)
-                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
-            List<Project> project = projectRepository.findByPortfolioId(portfolio);
+            Portfolio portfolios = portfolioRepository.findById(portfolio)
+                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolio));
+            List<Project> project = projectRepository.findByportfolio(portfolios);
             List<ProjectDTO> projectDTOS = project.stream().map(this::convertToDTO).toList();
             return ResponseUtils.createSuccessResponse(projectDTOS);
         } catch (Exception e) {
@@ -123,16 +123,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateProjectReq(ProjectReq projectReq) {
-        if (projectReq.getUserId() == null || !userRepository.existsById(projectReq.getUserId())) {
+        if (projectReq.getUser() == null || !userRepository.existsById(projectReq.getUser())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
-        if (!userRepository.isUserActiveById(projectReq.getUserId())) {
+        if (!userRepository.isUserActiveById(projectReq.getUser())) {
             throw new IllegalArgumentException("User is deactivated");
         }
-        if (projectReq.getPortfolioId() == null || !portfolioRepository.existsById(projectReq.getPortfolioId())) {
+        if (projectReq.getPortfolio() == null || !portfolioRepository.existsById(projectReq.getPortfolio())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
         }
-        if (!portfolioRepository.isPortfolioActiveById(projectReq.getPortfolioId())) {
+        if (!portfolioRepository.isPortfolioActiveById(projectReq.getPortfolio())) {
             throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (projectReq.getName() == null || projectReq.getName().isBlank()) {
@@ -156,9 +156,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(projectReq.getStatus());
         project.setCreatedOn(Helper.getCurrentTimeStamp());
         project.setUpdatedOn(Helper.getCurrentTimeStamp());
-        project.setUserId(userRepository.findById(projectReq.getUserId())
+        project.setUser(userRepository.findById(projectReq.getUser())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID.")));
-        project.setPortfolioId(portfolioRepository.findById(projectReq.getPortfolioId())
+        project.setPortfolio(portfolioRepository.findById(projectReq.getPortfolio())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid portfolio ID.")));
         return project;
     }

@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
-    List<Project> findByPortfolioId(Portfolio portfolio);
-    List<Project> findByPortfolioIdAndAndStatus(Portfolio portfolio, Boolean status);
+    List<Project> findByportfolio(Portfolio portfolio);
+    List<Project> findByportfolioAndAndStatus(Portfolio portfolio, Boolean status);
 }

@@ -7,7 +7,7 @@ import com.auspicius.responce.PortfolioReq;
 import java.util.List;
 
 public interface PortfolioService {
-    Portfolio getPortfolioByUserId(Integer userId);
+    Portfolio getPortfolioByuser(Integer user);
 
 
     ApiResponse<Portfolio> createPortfolio(PortfolioReq portfolioReq);

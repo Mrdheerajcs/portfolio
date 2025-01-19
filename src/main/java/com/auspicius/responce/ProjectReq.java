@@ -4,8 +4,8 @@ import lombok.Data;
 
 @Data
 public class ProjectReq {
-    private Integer userId;
-    private Integer portfolioId;
+    private Integer user;
+    private Integer portfolio;
     private String name;
     private String description;
     private String startDate;

@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Integer> {
 
-    List<Skill> findByPortfolioId(Portfolio portfolio);
+    List<Skill> findByportfolio(Portfolio portfolio);
 
-    List<Skill> findByPortfolioIdAndAndStatus(Portfolio portfolio, Boolean status);
+    List<Skill> findByportfolioAndAndStatus(Portfolio portfolio, Boolean status);
 }

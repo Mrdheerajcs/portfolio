@@ -17,7 +17,7 @@ public class HelperUtils {
 //    public static String LASTFOLDERPATH = "C:/Program Files/Tomcat 9.0/webapps/cgbmsreport";
 //    public static String FILEPATH = "https://icg.net.in/cgbmsreport/";
 
-    public static String getUserId() {
+    public static String getUser() {
         return "USR" + ConverterUtils.getRandomTimeStamp();
     }
 

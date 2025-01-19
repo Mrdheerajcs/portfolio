@@ -50,8 +50,8 @@ public class PortfolioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/getByUserId/{userId}")
-    public Portfolio getPortfolio(@PathVariable Integer userId) {
-        return portfolioService.getPortfolioByUserId(userId);
+    @GetMapping("/getByuser/{user}")
+    public Portfolio getPortfolio(@PathVariable Integer user) {
+        return portfolioService.getPortfolioByuser(user);
     }
 }

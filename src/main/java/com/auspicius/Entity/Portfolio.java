@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -21,26 +22,27 @@ public class Portfolio {
     private Integer id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinColumn(name = "user_id", nullable = false)
-    private User userId; // Renamed for clarity
+    private User user;
 
     @Column(nullable = false)
-    private String title; // e.g., "Software Developer Portfolio"
+    private String title;
 
-    private String theme; // Optional: Theme or styling preference
+    private String theme;
 
     @Column(nullable = false)
-    private Boolean isPublic; // Whether the portfolio is public
+    private Boolean isPublic;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
-    private Timestamp createdOn; // Automatically populated when created
+    private Timestamp createdOn;
 
     @UpdateTimestamp
-    private Timestamp updatedOn; // Automatically updated on changes
+    private Timestamp updatedOn;
 
     @Column(nullable = false)
-    private Boolean status; // Indicates if the portfolio is active or not
+    private Boolean status;
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

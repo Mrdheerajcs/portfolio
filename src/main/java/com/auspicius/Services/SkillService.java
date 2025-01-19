@@ -15,7 +15,7 @@ public interface SkillService {
 
     ApiResponse<SkillDTO> getSkillById(Integer id);
 
-    ApiResponse<List<SkillDTO>> getSkillByPortfolioId(Integer portfolioId);
+    ApiResponse<List<SkillDTO>> getSkillByportfolio(Integer portfolio);
 
     ApiResponse<List<SkillDTO>> getAllSkills();
 

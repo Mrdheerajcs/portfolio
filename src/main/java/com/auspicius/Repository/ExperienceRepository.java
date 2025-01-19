@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ExperienceRepository extends JpaRepository<Experience, Integer> {
-    List<Experience> findByPortfolioId(Portfolio portfolio);
-    List<Experience> findByPortfolioIdAndAndStatus(Portfolio portfolio, Boolean status);
+    List<Experience> findByportfolio(Portfolio portfolio);
+    List<Experience> findByportfolioAndAndStatus(Portfolio portfolio, Boolean status);
 }
