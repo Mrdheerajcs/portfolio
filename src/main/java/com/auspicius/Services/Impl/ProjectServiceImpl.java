@@ -1,7 +1,7 @@
 package com.auspicius.Services.Impl;
 
+import com.auspicius.Entity.Portfolio;
 import com.auspicius.Entity.Project;
-import com.auspicius.Entity.Skill;
 import com.auspicius.Repository.PortfolioRepository;
 import com.auspicius.Repository.ProjectRepository;
 import com.auspicius.Repository.UserRepository;
@@ -11,17 +11,12 @@ import com.auspicius.helperUtil.Helper;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.responce.ProjectDTO;
 import com.auspicius.responce.ProjectReq;
-import com.auspicius.responce.SkillDTO;
 import com.auspicius.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -34,7 +29,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Autowired
     private PortfolioRepository portfolioRepository;
-
 
     @Override
     public ApiResponse<Project> createProject(ProjectReq projectReq) {
@@ -71,26 +65,50 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-//    @Override
-//    public ApiResponse<ProjectDTO> getProjectById(Integer id) {
-//        return projectRepository.findById(id)
-//                .map(project -> ResponseUtils.createSuccessResponse(convertToDTO(project)))
-//                .orElseGet(() -> ResponseUtils.createFailureResponse("Project not found.", HttpStatus.NOT_FOUND.value()));
-//    }
+    @Override
+    public ApiResponse<Project> updateProjectStatus(Integer id, Boolean status) {
+        Project existingProject = projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Skill with ID " + id + " not found"));
+        existingProject.setStatus(status);
+        existingProject.setUpdatedOn(Helper.getCurrentTimeStamp());
+        Project updatedProject = projectRepository.save(existingProject);
+        return ResponseUtils.createSuccessResponse(updatedProject);
+    }
 
     @Override
-    public ApiResponse<List<ProjectDTO>> getAllProjects(int page, int size) {
+    public ApiResponse<ProjectDTO> getProjectById(Integer id) {
+        return projectRepository.findById(id)
+                .map(project -> ResponseUtils.createSuccessResponse(convertToDTO(project)))
+                .orElseGet(() -> ResponseUtils.createFailureResponse("Project  not found.", HttpStatus.NOT_FOUND.value()));
+    }
+
+    @Override
+    public ApiResponse<List<ProjectDTO>> getProjectByPortfolioId(Integer portfolioId) {
         try {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<Project> projectPage = projectRepository.findAll(pageable);
-            List<ProjectDTO> projectDTOs = projectPage.getContent().stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
-            return ResponseUtils.createSuccessResponse(projectDTOs);
+            Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
+            List<Project> project = projectRepository.findByPortfolioId(portfolio);
+            List<ProjectDTO> projectDTOS = project.stream().map(this::convertToDTO).toList();
+            return ResponseUtils.createSuccessResponse(projectDTOS);
+        } catch (Exception e) {
+            return ResponseUtils.createFailureResponse(
+                    "An error occurred while retrieving projects.",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+            );
+        }
+    }
+
+    @Override
+    public ApiResponse<List<ProjectDTO>> getAllProjects() {
+        try {
+            List<Project> projects = projectRepository.findAll();
+            List<ProjectDTO> projectDTOS = projects.stream().map(this::convertToDTO).toList();
+            return ResponseUtils.createSuccessResponse(projectDTOS);
         } catch (Exception e) {
             return ResponseUtils.createFailureResponse("An error occurred while retrieving projects.", HttpStatus.INTERNAL_SERVER_ERROR.value());
         }
     }
+
 
     @Override
     public ApiResponse<String> deleteProject(Integer id) {
@@ -138,7 +156,14 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(projectReq.getStatus());
         project.setCreatedOn(Helper.getCurrentTimeStamp());
         project.setUpdatedOn(Helper.getCurrentTimeStamp());
+        project.setUserId(userRepository.findById(projectReq.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID.")));
+        project.setPortfolioId(portfolioRepository.findById(projectReq.getPortfolioId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid portfolio ID.")));
         return project;
     }
 
+    private ProjectDTO convertToDTO(Project project) {
+        return new ProjectDTO(project);
+    }
 }

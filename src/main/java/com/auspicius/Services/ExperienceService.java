@@ -14,11 +14,11 @@ public interface   ExperienceService {
 
     ApiResponse<Experience> updateExperience(Integer id, ExperienceReq experienceReq);
 
-//    ApiResponse<ExperienceDTO> getExperienceById(Integer id);
+    ApiResponse<ExperienceDTO> getExperienceById(Integer id);
 
-//    ApiResponse<List<ExperienceDTO>> getExperiencesByPortfolioId(Integer portfolioId);
+    ApiResponse<List<ExperienceDTO>> getExperienceByPortfolioId(Integer portfolioId);
 
-//    ApiResponse<List<ExperienceDTO>> getAllExperiences();
+    ApiResponse<List<ExperienceDTO>> getAllExperiences();
 
     ApiResponse<Experience> updateExperienceStatus(Integer id, Boolean status);
 

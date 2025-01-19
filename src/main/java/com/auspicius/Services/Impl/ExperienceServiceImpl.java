@@ -66,36 +66,40 @@ public class ExperienceServiceImpl implements ExperienceService {
         }
     }
 
-//    @Override
-//    public ApiResponse<ExperienceDTO> getExperienceById(Integer id) {
-//        return experienceRepository.findById(id)
-//                .map(experience -> ResponseUtils.createSuccessResponse(convertToDTO(experience)))
-//                .orElseGet(() -> ResponseUtils.createFailureResponse("Experience not found.", HttpStatus.NOT_FOUND.value()));
-//    }
+    @Override
+    public ApiResponse<ExperienceDTO> getExperienceById(Integer id) {
+        return experienceRepository.findById(id)
+                .map(project -> ResponseUtils.createSuccessResponse(convertToDTO(project)))
+                .orElseGet(() -> ResponseUtils.createFailureResponse("Experience  not found.", HttpStatus.NOT_FOUND.value()));
+    }
 
-//    @Override
-//    public ApiResponse<List<ExperienceDTO>> getExperiencesByPortfolioId(Integer portfolioId) {
-//        try {
-//            Portfolio portfolio = portfolioRepository.findById(portfolioId)
-//                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
-//            List<Experience> experiences = experienceRepository.findByPortfolioId(portfolio);
-//            List<ExperienceDTO> experienceDTOs = experiences.stream().map(this::convertToDTO).toList();
-//            return ResponseUtils.createSuccessResponse(experienceDTOs);
-//        } catch (Exception e) {
-//            return ResponseUtils.createFailureResponse("An error occurred while retrieving experiences.", HttpStatus.INTERNAL_SERVER_ERROR.value());
-//        }
-//    }
+    @Override
+    public ApiResponse<List<ExperienceDTO>> getExperienceByPortfolioId(Integer portfolioId) {
+        try {
+            Portfolio portfolio = portfolioRepository.findById(portfolioId)
+                    .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolioId));
+            List<Experience> experiences = experienceRepository.findByPortfolioId(portfolio);
+            List<ExperienceDTO> experienceDTOS = experiences.stream().map(this::convertToDTO).toList();
+            return ResponseUtils.createSuccessResponse(experienceDTOS);
+        } catch (Exception e) {
+            return ResponseUtils.createFailureResponse(
+                    "An error occurred while retrieving Experience.",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+            );
+        }
+    }
 
-//    @Override
-//    public ApiResponse<List<ExperienceDTO>> getAllExperiences() {
-//        try {
-//            List<Experience> experiences = experienceRepository.findAll();
-//            List<ExperienceDTO> experienceDTOs = experiences.stream().map(this::convertToDTO).toList();
-//            return ResponseUtils.createSuccessResponse(experienceDTOs);
-//        } catch (Exception e) {
-//            return ResponseUtils.createFailureResponse("An error occurred while retrieving experiences.", HttpStatus.INTERNAL_SERVER_ERROR.value());
-//        }
-//    }
+    @Override
+    public ApiResponse<List<ExperienceDTO>> getAllExperiences() {
+        try {
+            List<Experience> experiences = experienceRepository.findAll();
+            List<ExperienceDTO> experienceDTOS = experiences.stream().map(this::convertToDTO).toList();
+            return ResponseUtils.createSuccessResponse(experienceDTOS);
+        } catch (Exception e) {
+            return ResponseUtils.createFailureResponse("An error occurred while retrieving experience.", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        }
+    }
+
 
     @Override
     public ApiResponse<Experience> updateExperienceStatus(Integer id, Boolean status) {
@@ -160,5 +164,9 @@ public class ExperienceServiceImpl implements ExperienceService {
         experience.setUpdatedOn(Helper.getCurrentTimeStamp());
         experience.setStatus(true);
         return experience;
+    }
+
+    private ExperienceDTO convertToDTO(Experience experience) {
+        return new ExperienceDTO(experience);
     }
 }

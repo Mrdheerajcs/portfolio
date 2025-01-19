@@ -15,9 +15,13 @@ public interface ProjectService {
 
     ApiResponse<Project> updateProject(Integer id, ProjectReq projectReq);
 
-//    ApiResponse<ProjectDTO> getProjectById(Integer id);
+    ApiResponse<Project> updateProjectStatus(Integer id, Boolean status);
 
-//    ApiResponse<List<ProjectDTO>> getAllProjects();
+    ApiResponse<ProjectDTO> getProjectById(Integer id);
+
+    ApiResponse<List<ProjectDTO>> getProjectByPortfolioId(Integer portfolioId);
+
+    ApiResponse<List<ProjectDTO>> getAllProjects();
 
     ApiResponse<String> deleteProject(Integer id);
 }

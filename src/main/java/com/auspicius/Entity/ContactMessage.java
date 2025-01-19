@@ -1,5 +1,6 @@
 package com.auspicius.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,9 +17,11 @@ public class ContactMessage {
     private Integer id;
 
     @ManyToOne
+    @JsonIgnore
     private Portfolio portfolioId;
 
     @ManyToOne
+    @JsonIgnore
     private User userId;
 
     @Column(name = "sender_email")
