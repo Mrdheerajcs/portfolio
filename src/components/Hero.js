@@ -38,13 +38,12 @@ const Hero = () => {
 
     const interval = setInterval(() => {
       setBinaryRows(generateBinaryRows());
-    }, 50); // Faster update interval for dynamic effect
-
+    }, 50); 
     return () => clearInterval(interval);
   }, []);
 
   const handleTouchpadClick = () => {
-    setShowBinary(!showBinary); // Toggle between binary and image
+    setShowBinary(!showBinary); 
   };
 
   const handleViewWork = () => {
@@ -56,16 +55,14 @@ const Hero = () => {
       id="home"
       className="relative bg-black text-white h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Cursor-Following Light */}
       <div
         className="absolute w-96 h-96 rounded-full bg-gradient-to-br from-green-500 to-transparent blur-3xl pointer-events-none"
         style={{
-          left: mousePosition.x - 192, // Offset to center the light
-          top: mousePosition.y - 192, // Offset to center the light
+          left: mousePosition.x - 192, 
+          top: mousePosition.y - 192, 
         }}
       ></div>
 
-      {/* Main Content */}
       <div className="text-center z-10">
         {/* <h1 className="text-black sm:text-red-700 md:text-green-700  lg:text-blue-700 xl:text-yellow-700 2xl:text-pink-700  text-8xl">responsive</h1> */}
         <h1 className="md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl font-bold mb-4">
@@ -83,14 +80,11 @@ const Hero = () => {
         </button>
       </div>
 
-      {/* Developer Illustration */}
       <img
         src={developerImage}
         alt="Developer Illustration"
         className="absolute bottom-10 right-10 w-1/5 opacity-75"
       />
-
-      {/* Binary Code Inside Laptop Effect */}
 
       <img
         src={laptop}
@@ -104,7 +98,6 @@ const Hero = () => {
         onClick={handleTouchpadClick}
       />
 
-      {/* Binary Code or Photo */}
       <div
         className="absolute xl:top-[19.1%] xl:left-[6.3%] bg-gray-900 rounded-md xl:w-[25.2%] xl:h-[34.6%] flex flex-col justify-center items-center overflow-hidden md:top-[11%] md:left-[37.4%] md:w-[25.2%] md:h-[7.2%]  2xl:top-[18.7%] 2xl:left-[5.7%] 2xl:w-[25%] 2xl:h-[38.9%] lg:top-[39.6%] lg:left-[6.7%] lg:w-[24.9%] lg:h-[27.4%]"
         style={{
