@@ -62,5 +62,9 @@ public class Portfolio {
 
     @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
+    private Set<SocialLink> socialLink;
+
+    @OneToMany(mappedBy = "portfolio", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<ContactMessage> contactMessages;
 }

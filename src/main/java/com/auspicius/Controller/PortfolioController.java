@@ -52,6 +52,15 @@ public class PortfolioController {
 
     @GetMapping("/getByuser/{user}")
     public Portfolio getPortfolio(@PathVariable Integer user) {
-        return portfolioService.getPortfolioByuser(user);
+        return portfolioService.getPortfolioByUser(user);
     }
+
+    @GetMapping("/getByEmail/{email}")
+    public ResponseEntity<ApiResponse<Portfolio>> getPortfolioByEmail(@PathVariable String email) {
+        ApiResponse<Portfolio> response = portfolioService.getPortfolioByEmail(email);
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+
+
 }

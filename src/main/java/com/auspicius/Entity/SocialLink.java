@@ -10,11 +10,17 @@ import java.sql.Timestamp;
 @Entity
 @Getter
 @Setter
-@Table(name = "Skills")
-public class Skill {
+@Table(name = "social_links")
+public class SocialLink {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(nullable = false)
+    private String url;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,9 +31,7 @@ public class Skill {
     @JoinColumn(name = "portfolio_id", nullable = false)
     @JsonIgnore
     private Portfolio portfolio;
-    private Boolean status;
-    private String name;
-    private String level; // Beginner, Intermediate, Expert
+
     @Column(nullable = false, updatable = false)
     private Timestamp createdOn;
     private Timestamp updatedOn;

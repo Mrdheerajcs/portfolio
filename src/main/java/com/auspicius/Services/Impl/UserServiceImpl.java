@@ -1,6 +1,8 @@
 package com.auspicius.Services.Impl;
 
+import com.auspicius.Entity.SocialLink;
 import com.auspicius.Entity.User;
+import com.auspicius.Repository.SocialLinkRepository;
 import com.auspicius.Repository.UserRepository;
 import com.auspicius.Services.UserService;
 import com.auspicius.exception.RecordNotFoundException;
@@ -20,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
 
     @Override
     public ApiResponse<User> getUserById(Integer id) {
@@ -58,12 +61,19 @@ public class UserServiceImpl implements UserService {
             existingUser = userRepository.findByEmail(email);
         }
 
-        // Handle user not found
         if (existingUser.isEmpty()) {
             throw new SDDException("user", HttpStatus.NOT_FOUND.value(), "User not found");
         }
 
         User userToUpdate = existingUser.get();
+
+        // Check if email is being updated
+        if (user.getEmail() != null && !user.getEmail().equals(userToUpdate.getEmail())) {
+            if (userRepository.existsByEmail(user.getEmail())) {
+                throw new SDDException("email", HttpStatus.BAD_REQUEST.value(), "Email already in use");
+            }
+            userToUpdate.setEmail(user.getEmail());
+        }
 
         if (user.getName() != null) userToUpdate.setName(user.getName());
         if (user.getTitle() != null) userToUpdate.setTitle(user.getTitle());
@@ -71,14 +81,11 @@ public class UserServiceImpl implements UserService {
         if (user.getAboutMe() != null) userToUpdate.setAboutMe(user.getAboutMe());
         if (user.getProfilePicture() != null) userToUpdate.setProfilePicture(user.getProfilePicture());
         if (user.getStatus() != null) userToUpdate.setStatus(user.getStatus());
-        if (user.getSocialLinks() != null) userToUpdate.setSocialLinks(user.getSocialLinks());
 
         userToUpdate.setUpdatedOn(Helper.getCurrentTimeStamp());
-        userToUpdate.setStatus(userToUpdate.getStatus());
-
         User updatedUser = userRepository.save(userToUpdate);
         return ResponseUtils.createSuccessResponse(updatedUser);
-}
+    }
 
     @Override
     public ApiResponse<User> updateUserStatus(Integer id, Boolean status) {
@@ -118,7 +125,6 @@ public class UserServiceImpl implements UserService {
         target.setAboutMe(source.getAboutMe());
         target.setProfilePicture(source.getProfilePicture());
         target.setStatus(source.getStatus());
-        target.setSocialLinks(source.getSocialLinks());
         target.setUpdatedOn(Helper.getCurrentTimeStamp());
     }
 }

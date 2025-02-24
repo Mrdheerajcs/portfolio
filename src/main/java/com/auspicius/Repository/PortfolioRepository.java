@@ -11,8 +11,6 @@ import java.util.Optional;
 
 @Repository
 public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {
-    Optional<Portfolio> findByuser(User user);
-
     @Query("SELECT p FROM Portfolio p WHERE p.id = :id")
     Portfolio findPortfolioById(Integer id);
 
@@ -30,5 +28,8 @@ public interface PortfolioRepository extends JpaRepository<Portfolio, Integer> {
 
     @Query("SELECT p.status FROM Portfolio p WHERE p.id = :id")
     boolean isPortfolioActiveById(@Param("id") Integer id);
+
+    Optional<Portfolio> findByUserId(Integer userId);
+
 
 }
