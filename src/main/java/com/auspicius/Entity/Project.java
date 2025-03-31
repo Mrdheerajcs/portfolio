@@ -22,7 +22,7 @@ public class Project {
     @JsonIgnore
     private User user;
 
-@ManyToOne
+    @ManyToOne
     @JoinColumn(name = "portfolio_id", nullable = false)
     @JsonIgnore
     private Portfolio portfolio;

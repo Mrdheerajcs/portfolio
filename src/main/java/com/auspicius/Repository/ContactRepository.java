@@ -1,4 +1,7 @@
 package com.auspicius.Repository;
 
-public interface ContactRepository {
+import com.auspicius.Entity.ContactMessage;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ContactRepository extends JpaRepository<ContactMessage, Integer> {
 }

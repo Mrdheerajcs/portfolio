@@ -10,7 +10,7 @@ import java.util.List;
 public interface SocialLinkService {
 
 
-   ApiResponse<SocialLink> addSocialLink(Integer userId, Integer portfolioId, SocialLinkRequest request);
+   ApiResponse<SocialLink> addSocialLink(SocialLinkRequest request);
 
     ApiResponse<List<UserSocialRes>> getUserSocialLinks(Integer userId);
 

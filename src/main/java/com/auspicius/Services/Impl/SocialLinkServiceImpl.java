@@ -32,18 +32,18 @@ public class SocialLinkServiceImpl implements SocialLinkService {
     private PortfolioRepository portfolioRepository;
 
     @Override
-    public ApiResponse<SocialLink> addSocialLink(Integer userId, Integer portfolioId, SocialLinkRequest request) {
-        User user = userRepository.findById(userId)
+    public ApiResponse<SocialLink> addSocialLink(SocialLinkRequest request) {
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new SDDException("user", HttpStatus.NOT_FOUND.value(), "User not found"));
 
-        Portfolio portfolio = portfolioRepository.findById(portfolioId)
+        Portfolio portfolio = portfolioRepository.findById(request.getPortfolioId())
                 .orElseThrow(() -> new SDDException("portfolio", HttpStatus.NOT_FOUND.value(), "Portfolio not found"));
 
         SocialLink socialLink = new SocialLink();
         socialLink.setUser(user);
         socialLink.setPortfolio(portfolio);
         socialLink.setName(request.getName());
-        socialLink.setUrl(request.getUrl());
+        socialLink.setUrlLink(request.getUrlLink());
         socialLink.setCreatedOn(Helper.getCurrentTimeStamp());
         socialLink.setUpdatedOn(Helper.getCurrentTimeStamp());
 
@@ -59,7 +59,7 @@ public class SocialLinkServiceImpl implements SocialLinkService {
             UserSocialRes res = new UserSocialRes();
             res.setId(socialLink.getId());
             res.setName(socialLink.getName());
-            res.setUrl(socialLink.getUrl());
+            res.setUrlLink(socialLink.getUrlLink());
             res.setUserId(socialLink.getUser().getId());
             return res;
         }).toList();
@@ -72,8 +72,8 @@ public class SocialLinkServiceImpl implements SocialLinkService {
         SocialLink existingLink = socialLinkRepository.findById(linkId)
                 .orElseThrow(() -> new SDDException("socialLink", HttpStatus.NOT_FOUND.value(), "Social link not found"));
 
-        if (updatedLink.getUrl() != null) {
-            existingLink.setUrl(updatedLink.getUrl());
+        if (updatedLink.getUrlLink() != null) {
+            existingLink.setUrlLink(updatedLink.getUrlLink());
         }
         if (updatedLink.getName() != null) {
             existingLink.setName(updatedLink.getName());

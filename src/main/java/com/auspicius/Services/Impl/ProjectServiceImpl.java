@@ -2,6 +2,7 @@ package com.auspicius.Services.Impl;
 
 import com.auspicius.Entity.Portfolio;
 import com.auspicius.Entity.Project;
+import com.auspicius.Entity.User;
 import com.auspicius.Repository.PortfolioRepository;
 import com.auspicius.Repository.ProjectRepository;
 import com.auspicius.Repository.UserRepository;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -32,37 +34,48 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public ApiResponse<Project> createProject(ProjectReq projectReq) {
-        try {
-            validateProjectReq(projectReq);
-            Project project = mapToEntity(projectReq);
-            Project savedProject = projectRepository.save(project);
-            return ResponseUtils.createSuccessResponse(savedProject);
-        } catch (IllegalArgumentException e) {
-            return ResponseUtils.createFailureResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
-        } catch (Exception e) {
-            return ResponseUtils.createFailureResponse("An error occurred while creating the project.", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
+        User user = userRepository.findById(projectReq.getUserId())
+                .orElseThrow(() -> new RecordNotFoundException("User not found"));
+        Portfolio portfolio = portfolioRepository.findById(projectReq.getPortfolioId())
+                .orElseThrow(() -> new RecordNotFoundException("Portfolio not found"));
+
+        Project project = new Project();
+        project.setUser(user);
+        project.setPortfolio(portfolio);
+        project.setName(projectReq.getName());
+        project.setDescription(projectReq.getDescription());
+        project.setStartDate(projectReq.getStartDate());
+        project.setEndDate(projectReq.getEndDate());
+        project.setStatus(projectReq.getStatus());
+        project.setTechStack(projectReq.getTechStack());
+        project.setRepositoryUrl(projectReq.getRepositoryUrl());
+        project.setLiveDemoUrl(projectReq.getLiveDemoUrl());
+        project.setImageUrl(projectReq.getImageUrl());
+        project.setCreatedOn(new Timestamp(System.currentTimeMillis()));
+        project.setUpdatedOn(new Timestamp(System.currentTimeMillis()));
+
+        Project savedProject = projectRepository.save(project);
+        return ResponseUtils.createSuccessResponse(savedProject);
     }
 
     @Override
     public ApiResponse<Project> updateProject(Integer id, ProjectReq projectReq) {
-        try {
-            validateProjectReq(projectReq);
-            Project existingProject = projectRepository.findById(id)
-                    .orElseThrow(() -> new RecordNotFoundException("Project not found with the provided ID."));
-            existingProject.setName(projectReq.getName());
-            existingProject.setDescription(projectReq.getDescription());
-            existingProject.setStartDate(projectReq.getStartDate());
-            existingProject.setEndDate(projectReq.getEndDate());
-            existingProject.setStatus(projectReq.getStatus());
-            existingProject.setUpdatedOn(Helper.getCurrentTimeStamp());
-            Project updatedProject = projectRepository.save(existingProject);
-            return ResponseUtils.createSuccessResponse(updatedProject);
-        } catch (IllegalArgumentException e) {
-            return ResponseUtils.createFailureResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
-        } catch (Exception e) {
-            return ResponseUtils.createFailureResponse("An error occurred while updating the project.", HttpStatus.INTERNAL_SERVER_ERROR.value());
-        }
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RecordNotFoundException("Project not found"));
+
+        project.setName(projectReq.getName());
+        project.setDescription(projectReq.getDescription());
+        project.setStartDate(projectReq.getStartDate());
+        project.setEndDate(projectReq.getEndDate());
+        project.setStatus(projectReq.getStatus());
+        project.setTechStack(projectReq.getTechStack());
+        project.setRepositoryUrl(projectReq.getRepositoryUrl());
+        project.setLiveDemoUrl(projectReq.getLiveDemoUrl());
+        project.setImageUrl(projectReq.getImageUrl());
+        project.setUpdatedOn(new Timestamp(System.currentTimeMillis()));
+
+        Project updatedProject = projectRepository.save(project);
+        return ResponseUtils.createSuccessResponse(updatedProject);
     }
 
     @Override
@@ -123,16 +136,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     private void validateProjectReq(ProjectReq projectReq) {
-        if (projectReq.getUser() == null || !userRepository.existsById(projectReq.getUser())) {
+        if (projectReq.getUserId() == null || !userRepository.existsById(projectReq.getUserId())) {
             throw new IllegalArgumentException("Invalid or missing user ID.");
         }
-        if (!userRepository.isUserActiveById(projectReq.getUser())) {
+        if (!userRepository.isUserActiveById(projectReq.getUserId())) {
             throw new IllegalArgumentException("User is deactivated");
         }
-        if (projectReq.getPortfolio() == null || !portfolioRepository.existsById(projectReq.getPortfolio())) {
+        if (projectReq.getPortfolioId()== null || !portfolioRepository.existsById(projectReq.getPortfolioId())) {
             throw new IllegalArgumentException("Invalid or missing portfolio ID.");
         }
-        if (!portfolioRepository.isPortfolioActiveById(projectReq.getPortfolio())) {
+        if (!portfolioRepository.isPortfolioActiveById(projectReq.getPortfolioId())) {
             throw new IllegalArgumentException("Portfolio is deactivated");
         }
         if (projectReq.getName() == null || projectReq.getName().isBlank()) {
@@ -156,9 +169,9 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(projectReq.getStatus());
         project.setCreatedOn(Helper.getCurrentTimeStamp());
         project.setUpdatedOn(Helper.getCurrentTimeStamp());
-        project.setUser(userRepository.findById(projectReq.getUser())
+        project.setUser(userRepository.findById(projectReq.getUserId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID.")));
-        project.setPortfolio(portfolioRepository.findById(projectReq.getPortfolio())
+        project.setPortfolio(portfolioRepository.findById(projectReq.getPortfolioId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid portfolio ID.")));
         return project;
     }

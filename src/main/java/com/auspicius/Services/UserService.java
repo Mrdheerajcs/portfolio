@@ -19,4 +19,10 @@ public interface UserService {
     ApiResponse<User> updateUser(Integer id, String email, User user);
 
     ApiResponse<User> updateUserStatus(Integer id, Boolean status);
+
+    ApiResponse<String> changePassword(String email, String oldPassword, String newPassword);
+
+    ApiResponse<String> sendResetPasswordOTP(String email);
+    ApiResponse<String> resetPassword(String email, String otp, String newPassword);
+
 }

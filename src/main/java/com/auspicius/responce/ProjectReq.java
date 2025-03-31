@@ -1,16 +1,19 @@
 package com.auspicius.responce;
 
 import lombok.Data;
+import java.util.List;
 
 @Data
 public class ProjectReq {
-    private Integer user;
-    private Integer portfolio;
+    private Integer userId;
+    private Integer portfolioId;
     private String name;
     private String description;
     private String startDate;
     private String endDate;
     private Boolean status;
-
-    // Getters and Setters
+    private List<String> techStack;
+    private String repositoryUrl;
+    private String liveDemoUrl;
+    private String imageUrl;
 }

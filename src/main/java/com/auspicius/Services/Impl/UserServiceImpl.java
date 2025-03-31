@@ -1,8 +1,6 @@
 package com.auspicius.Services.Impl;
 
-import com.auspicius.Entity.SocialLink;
 import com.auspicius.Entity.User;
-import com.auspicius.Repository.SocialLinkRepository;
 import com.auspicius.Repository.UserRepository;
 import com.auspicius.Services.UserService;
 import com.auspicius.exception.RecordNotFoundException;
@@ -10,19 +8,28 @@ import com.auspicius.exception.SDDException;
 import com.auspicius.helperUtil.Helper;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.utils.ResponseUtils;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JavaMailSender mailSender;
+
+    private Map<String, String> otpStorage = new HashMap<>();
 
     @Override
     public ApiResponse<User> getUserById(Integer id) {
@@ -42,7 +49,9 @@ public class UserServiceImpl implements UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new SDDException("email", HttpStatus.BAD_REQUEST.value(), "Email already in use");
         }
+
         validateUser(user);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedOn(Helper.getCurrentTimeStamp());
         user.setUpdatedOn(Helper.getCurrentTimeStamp());
         user.setStatus(Boolean.TRUE.equals(user.getStatus()));
@@ -108,6 +117,23 @@ public class UserServiceImpl implements UserService {
         return ResponseUtils.createSuccessResponse("User deleted successfully");
     }
 
+    @Override
+    public ApiResponse<String> changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new SDDException("user", HttpStatus.NOT_FOUND.value(), "User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new SDDException("password", HttpStatus.BAD_REQUEST.value(), "Old password is incorrect");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedOn(Helper.getCurrentTimeStamp());
+        userRepository.save(user);
+
+        return ResponseUtils.createSuccessResponse("Password changed successfully");
+    }
+
+
     private void validateUser(User user) {
         if (user.getName() == null || user.getName().isBlank()) {
             throw new SDDException("name", HttpStatus.BAD_REQUEST.value(), "Name cannot be blank");
@@ -126,5 +152,46 @@ public class UserServiceImpl implements UserService {
         target.setProfilePicture(source.getProfilePicture());
         target.setStatus(source.getStatus());
         target.setUpdatedOn(Helper.getCurrentTimeStamp());
+    }
+
+    @Override
+    public ApiResponse<String> sendResetPasswordOTP(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new SDDException("user", HttpStatus.NOT_FOUND.value(), "User not found"));
+
+        String otp = String.format("%06d", new Random().nextInt(999999));
+        otpStorage.put(email, otp);
+
+        // Send email
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setSubject("Password Reset OTP");
+            helper.setText("Your OTP for password reset is: " + otp);
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new SDDException("email", HttpStatus.INTERNAL_SERVER_ERROR.value(), "Failed to send email");
+        }
+
+        return ResponseUtils.createSuccessResponse("OTP sent successfully to " + email);
+    }
+
+    @Override
+    public ApiResponse<String> resetPassword(String email, String otp, String newPassword) {
+        if (!otpStorage.containsKey(email) || !otpStorage.get(email).equals(otp)) {
+            throw new SDDException("otp", HttpStatus.BAD_REQUEST.value(), "Invalid OTP");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new SDDException("user", HttpStatus.NOT_FOUND.value(), "User not found"));
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setUpdatedOn(Helper.getCurrentTimeStamp());
+        userRepository.save(user);
+
+        otpStorage.remove(email);
+
+        return ResponseUtils.createSuccessResponse("Password reset successfully");
     }
 }

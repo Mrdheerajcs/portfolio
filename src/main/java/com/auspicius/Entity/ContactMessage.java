@@ -32,6 +32,9 @@ public class ContactMessage {
     @Column(name = "sender_email", nullable = false)
     private String email;
 
+    @Column(name = "sender_name", nullable = false)
+    private String name;
+
     @Column(length = 2000)
     private String message;
 

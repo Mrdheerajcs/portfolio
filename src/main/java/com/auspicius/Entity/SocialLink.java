@@ -20,7 +20,7 @@ public class SocialLink {
     private String name;
 
     @Column(nullable = false)
-    private String url;
+    private String urlLink;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

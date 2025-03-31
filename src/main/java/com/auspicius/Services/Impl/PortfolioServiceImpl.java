@@ -128,8 +128,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private Portfolio mapToEntity(PortfolioReq portfolioReq) {
-        User user = userRepository.findById(portfolioReq.getUser())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + portfolioReq.getUser()));
+        User user = userRepository.findByEmail(portfolioReq.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + portfolioReq.getEmail()));
 
         Portfolio portfolio = new Portfolio();
         portfolio.setUser(user);
@@ -146,7 +146,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     private void validatePortfolioReq(PortfolioReq portfolioReq) {
-        if (portfolioReq.getUser() == null) {
+        if (portfolioReq.getEmail() == null) {
             throw new IllegalArgumentException("User ID is required and cannot be null.");
         }
         if (portfolioReq.getTitle() == null || portfolioReq.getTitle().isBlank()) {
@@ -158,8 +158,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (portfolioReq.getIsPublic() == null) {
             throw new IllegalArgumentException("Public status is required and cannot be null.");
         }
-        if (!userRepository.existsById(portfolioReq.getUser())) {
+        if (!userRepository.existsByEmail(portfolioReq.getEmail())) {
             throw new IllegalArgumentException("The specified user does not exist.");
         }
     }
+
+
 }

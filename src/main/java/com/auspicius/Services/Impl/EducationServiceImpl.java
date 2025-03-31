@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -62,7 +61,7 @@ public class EducationServiceImpl implements EducationService {
     public ApiResponse<Education> updateEducation(Integer id, EducationReq educationReq) {
         try {
             // Validate the request data
-            validateEducationReq(educationReq);
+//            validateEducationReq(educationReq);
 
             // Retrieve the existing education record
             Education existingEducation = educationRepository.findById(id)
@@ -109,6 +108,26 @@ public class EducationServiceImpl implements EducationService {
                     );
                 });
     }
+
+    @Override
+    public ApiResponse<List<Education>> getEducationByportfolio(Integer portfolio) {
+        Portfolio portfolios = portfolioRepository.findById(portfolio)
+                .orElseThrow(() -> new IllegalArgumentException("Portfolio not found with ID: " + portfolio));
+        try {
+            // Retrieve all education records
+            List<Education> educations = educationRepository.findByportfolio(portfolios);
+
+            // Return a success response with the list of educations
+            return ResponseUtils.createSuccessResponse(educations);
+        } catch (Exception e) {
+            // Handle any errors during retrieval of education records
+            return ResponseUtils.createFailureResponse(
+                    "An error occurred while retrieving education records.",
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()
+            );
+        }
+    }
+
 
     @Override
     public ApiResponse<List<Education>> getAllEducations() {

@@ -8,7 +8,7 @@ import lombok.Setter;
 public class UserSocialRes {
     private Integer id;
     private String name;
-    private String url;
+    private String urlLink;
     private Integer userId;
     private Integer portfolioId;
 }

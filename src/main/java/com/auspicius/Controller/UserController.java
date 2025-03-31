@@ -63,4 +63,27 @@ public class UserController {
         ApiResponse<String> response = userService.deleteUser(id);
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ApiResponse<String>> changePassword(
+            @RequestParam String email,
+            @RequestParam String oldPassword,
+            @RequestParam String newPassword) {
+        return ResponseEntity.ok(userService.changePassword(email, oldPassword, newPassword));
+    }
+
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<String>> sendResetOTP(@RequestParam String email) {
+        return ResponseEntity.ok(userService.sendResetPasswordOTP(email));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<String>> resetPassword(
+            @RequestParam String email,
+            @RequestParam String otp,
+            @RequestParam String newPassword) {
+        return ResponseEntity.ok(userService.resetPassword(email, otp, newPassword));
+    }
+
 }

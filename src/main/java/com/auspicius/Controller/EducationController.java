@@ -4,7 +4,9 @@ import com.auspicius.Entity.Education;
 import com.auspicius.Services.EducationService;
 import com.auspicius.responce.ApiResponse;
 import com.auspicius.responce.EducationReq;
+import com.auspicius.responce.SkillDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,9 +28,15 @@ public class EducationController {
         return educationService.updateEducation(id, educationReq);
     }
 
-    @GetMapping("/grtById/{id}")
+    @GetMapping("/getById/{id}")
     public ApiResponse<Education> getEducationById(@PathVariable Integer id) {
         return educationService.getEducationById(id);
+    }
+
+    @GetMapping("/getByPortfolio/{id}")
+    public ResponseEntity<ApiResponse<List<Education>>> getEducationByportfolio(@PathVariable Integer id) {
+        ApiResponse<List<Education>> response = educationService.getEducationByportfolio(id);
+        return ResponseEntity.status(response.getStatus()).body(response);
     }
 
     @GetMapping("/getAll")

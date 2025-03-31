@@ -10,5 +10,5 @@ public class SocialLinkRequest {
     private Integer userId;
     private Integer portfolioId;
     private String name;
-    private String url;
+    private String urlLink;
 }

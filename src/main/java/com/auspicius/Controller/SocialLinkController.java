@@ -12,28 +12,28 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/users/social-links")
+@RequestMapping("/social-links")
 @RequiredArgsConstructor
 public class SocialLinkController {
     private final SocialLinkService socialLinkService;
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<SocialLink>> addSocialLink(@RequestBody SocialLinkRequest request) {
-        return ResponseEntity.ok(socialLinkService.addSocialLink(request.getUserId(), request.getPortfolioId(), request));
+        return ResponseEntity.ok(socialLinkService.addSocialLink( request));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/getByUser/{userId}")
     public ResponseEntity<ApiResponse<List<UserSocialRes>>> getUserSocialLinks(@PathVariable Integer userId) {
         return ResponseEntity.ok(socialLinkService.getUserSocialLinks(userId));
     }
 
-    @PutMapping("/{linkId}")
+    @PutMapping("/updateById/{linkId}")
     public ResponseEntity<ApiResponse<SocialLink>> updateSocialLink(@PathVariable Integer linkId, @RequestBody SocialLink updatedLink) {
         return ResponseEntity.ok(socialLinkService.updateSocialLink(linkId, updatedLink));
     }
 
 
-    @DeleteMapping("/{linkId}")
+    @DeleteMapping("/deleteById/{linkId}")
     public ResponseEntity<ApiResponse<String>> deleteSocialLink(@PathVariable Integer linkId) {
         return ResponseEntity.ok(socialLinkService.deleteSocialLink(linkId));
     }

@@ -14,6 +14,9 @@ public interface EducationService {
 
     ApiResponse<Education> getEducationById(Integer id);
 
+
+    ApiResponse<List<Education>> getEducationByportfolio(Integer portfolio);
+
     ApiResponse<List<Education>> getAllEducations();
 
     ApiResponse<String> deleteEducation(Integer id);
