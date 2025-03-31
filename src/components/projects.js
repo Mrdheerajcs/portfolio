@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { API_HOST } from "../ApiConfig/ApiConfig";
+import { API_HOST, PORTFOLIO_EMAIL } from "../ApiConfig/ApiConfig";
 import downloadImage from '../Asset/download.png';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProjects = async () => {
+  useEffect(() => {
+    fetchPortfolio();
+  }, []);
+
+  const fetchPortfolio = async () => {
+    
     try {
-      const response = await axios.get(`${API_HOST}/projects/getAll`);
-      setProjects(response.data.response);
-    } catch (error) {
-      console.error("Fetch projects error:", error.message);
-    } finally {
+      const response = await axios.get(`${API_HOST}/portfolio/getByEmail/${PORTFOLIO_EMAIL}`, {
+      });
+
+      if (response.status === 200) {
+        setProjects(response.data?.response?.projects || []);
+        console.log(response.data?.response);
+      }
       setLoading(false);
+    } catch (error) {
+      console.error("Error fetching UserPortfolios details:", error.response || error);
     }
   };
 
-  useEffect(() => {
-    fetchProjects();
-  }, []);
 
   return (
     <section id="projects" className="py-16 bg-gray-800 text-white">

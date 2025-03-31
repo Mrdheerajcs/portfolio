@@ -2,6 +2,9 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { FaCarSide } from "react-icons/fa";
 import { GoOrganization } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import { API_HOST, PORTFOLIO_EMAIL } from "../ApiConfig/ApiConfig";
+import axios from "axios";
+
 
 function MyWorkRoot() {
   const navigate = useNavigate();
@@ -12,39 +15,59 @@ function MyWorkRoot() {
   const [visitedCompanies, setVisitedCompanies] = useState([]);
   const [journeyComplete, setJourneyComplete] = useState(false);
   const [messageModal, setMessageModal] = useState(false);
+  const [experience, setExperience] = useState([]);
 
-  const companiesList = [
-    {
-      id: 1,
-      name: "Infosys",
-      description:
-        "Infosys is a global leader in next-generation digital services and consulting.",
-      myRole: "Full Stack Developer",
-    },
-    {
-      id: 2,
-      name: "TCS",
-      description:
-        "Tata Consultancy Services, a leading global IT services and consulting company.",
-      myRole: "Full Stack Developer",
-    },
-    {
-      id: 3,
-      name: "Google",
-      description:
-        "A global technology leader known for innovation and digital services.",
-      myRole: "Full Stack Developer",
-    },
-    {
-      id: 4,
-      name: "Amazon",
-      description:
-        "A multinational technology company focusing on e-commerce, cloud computing, and AI.",
-      myRole: "Full Stack Developer",
-    },
-  ];
 
-  const roadLength = companiesList.length * 18; 
+  useEffect(() => {
+    fetchPortfolio();
+  }, []);
+
+  const fetchPortfolio = async () => {
+
+    try {
+      const response = await axios.get(`${API_HOST}/portfolio/getByEmail/${PORTFOLIO_EMAIL}`, {
+      });
+
+      if (response.status === 200) {
+        setExperience(response.data?.response?.experiences || []);
+      }
+    } catch (error) {
+      console.error("Error fetching UserPortfolios details:", error.response || error);
+    }
+  };
+
+  // const experience = [
+  //   {
+  //     id: 1,
+  //     companyName: "Infosys",
+  //     description:
+  //       "Infosys is a global leader in next-generation digital services and consulting.",
+  //     role: "Full Stack Developer",
+  //   },
+  //   {
+  //     id: 2,
+  //     companyName: "TCS",
+  //     description:
+  //       "Tata Consultancy Services, a leading global IT services and consulting company.",
+  //     role: "Full Stack Developer",
+  //   },
+  //   {
+  //     id: 3,
+  //     companyName: "Google",
+  //     description:
+  //       "A global technology leader known for innovation and digital services.",
+  //     role: "Full Stack Developer",
+  //   },
+  //   {
+  //     id: 4,
+  //     companyName: "Amazon",
+  //     description:
+  //       "A multinational technology company focusing on e-commerce, cloud computing, and AI.",
+  //     role: "Full Stack Developer",
+  //   },
+  // ];
+
+  const roadLength = experience.length * 18; 
 
   useEffect(() => {
     if(journeyComplete === true){
@@ -71,7 +94,7 @@ function MyWorkRoot() {
           if (prev < roadLength) {
             if (prev % 15 === 0 && prev !== 0) {
               const companyIndex = prev / 15 - 1;
-              const company = companiesList[companyIndex];
+              const company = experience[companyIndex];
               setCurrentCompany(company);
               setIsModalOpen(true);
               setIsMoving(false);
@@ -159,7 +182,7 @@ function MyWorkRoot() {
         <div className="fixed inset-0 flex items-center justify-center bg-gray-600 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
             <div className="text-xl font-semibold mb-4">
-              Do you want to visit {currentCompany.name}?
+              Do you want to visit {currentCompany.companyName}?
             </div>
             <div className="flex justify-around">
               <button
@@ -182,8 +205,8 @@ function MyWorkRoot() {
         {messageModal && (
           <div className=" inset-0 flex items-center justify-center absolute top-5 bg-gray-600 bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
-              <h5 className="text-lg font-semibold">{currentCompany.name}</h5>
-              <h6 className="text-sm font-medium">{currentCompany.myRole}</h6>
+              <h5 className="text-lg font-semibold">{currentCompany.companyName}</h5>
+              <h6 className="text-sm font-medium">{currentCompany.role}</h6>
               <p className="text-gray-600">{currentCompany.description}</p>
               <p className="mt-4 text-sm text-gray-500">
                 Car will continue shortly...
